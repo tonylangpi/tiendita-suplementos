@@ -6,24 +6,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import axios, { AxiosError } from "axios";
 import { Button, Modal, Label, TextInput, Textarea } from "flowbite-react";
 import { useRouter } from "next/navigation";
-import { revalidatePath } from 'next/cache'
 import { useState } from "react";
-export default function Tabla({ datos }) {
+import  {useSecurity}  from '../context/SeguridadContext'
+export default function Tabla() {
   const [openModal, setOpenModal] = useState();
+  const{Empresas} = useSecurity(); 
   const router = useRouter();
   const props = { openModal, setOpenModal };
-  // const ListarEmpresas = () => {
-  //   setValores(datos)
-  // };
-  // useEffect(() => {
-  //   ListarEmpresas();
-  // });
 
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {//funciona que captura datos y actualiza los datos a la BD mediante la api
     let res = await axios.put('/api/seguridad/empresa',values);
     alert(res.data?.message);
-    router.refresh();
-    router.push("/moduloSeguridad"); 
+    //router.refresh();
     exitEditingMode(); 
   };
    
@@ -63,7 +57,6 @@ export default function Tabla({ datos }) {
       });
       setErrores(response?.data?.message);
       router.refresh();
-      router.push("/moduloSeguridad"); 
     } catch (error) {
       console.error(error);
       if (error instanceof AxiosError) {
@@ -114,7 +107,7 @@ export default function Tabla({ datos }) {
       <MaterialReactTable
         columns={columns}
         enableRowActions
-        data={datos}
+        data={Empresas}
         onEditingRowSave={handleSaveRowEdits}
         renderRowActions={({ row, table }) => (
           <div className="flex">
@@ -129,7 +122,6 @@ export default function Tabla({ datos }) {
        if (res.status === 204) {
          alert("Empresa borrada"); 
          router.refresh();
-         router.push("/moduloSeguridad"); 
       }
     }}>
               <DeleteIcon />

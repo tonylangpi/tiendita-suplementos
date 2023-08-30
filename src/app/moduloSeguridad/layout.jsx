@@ -2,7 +2,8 @@
 
 import { Navbar } from 'flowbite-react';
 import Link from 'next/link';
-export default function ProductosLayout({children}){
+import {SeguridadContextProvider} from '../../context/SeguridadContext';
+export default function SeguridadLayout({children}){
     return <>
       <Navbar
       fluid
@@ -38,7 +39,9 @@ export default function ProductosLayout({children}){
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
-    {children}
+    <SeguridadContextProvider>
+      {children}
+    </SeguridadContextProvider>
     
     </>
 }
