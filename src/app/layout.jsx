@@ -2,7 +2,6 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import Providers  from './Providers'
 const inter = Inter({ subsets: ['latin'] })
-import Script from 'next/script'
 import 'flowbite';
 //import Loading from '@/components/Spinner';
 import Slidebar from '../components/Sidebar'; 
@@ -20,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}><Providers><div className='flex'><Slidebar/><div className='p-7 flex-1 h-screen'>{children}</div></div></Providers>
-
       </body>
     </html>
   )

@@ -27,7 +27,7 @@ export default function ProductosLayout({children}){
             Empresas
           </p>
         </Navbar.Link>
-        <Navbar.Link href="#">
+        <Navbar.Link as={Link} href="/moduloSeguridad/roles">
           Roles
         </Navbar.Link>
         <Navbar.Link href="#">

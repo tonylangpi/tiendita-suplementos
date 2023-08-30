@@ -8,7 +8,6 @@ export async function GET(request, { params }){//obtener empresas por id
 
 export async function DELETE(request, { params }){//obtener empresas por id
    try {
-    console.log(params.id);
       const result = await pool.query("DELETE FROM Empresa WHERE idEmpresa = ?", [
         params.id,
       ]);

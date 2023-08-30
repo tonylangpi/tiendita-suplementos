@@ -1,21 +1,29 @@
-import React from 'react'
-//import Tabla from '../../../components/Tabla';
+"use client"
+import {useState,useEffect} from 'react'
+import Tabla from '../../../components/Tabla';
 import axios from 'axios'; 
-import {Suspense} from 'react'
-import dynamic from 'next/dynamic';
- const Tabla = dynamic(() => import('../../../components/Tabla'), { ssr: false, loading: () =><p>Cargando...</p> })
- async function cargarEmpresas(){
-    const {data} = await axios.get('http://localhost:3000/api/seguridad/empresa')
-   return data; 
-}
- const Empresas = async() => {
-  const empresas = await cargarEmpresas(); 
+import Spin from '../../../components/Spinner';
+// import dynamic from 'next/dynamic';
+//  const Tabla = dynamic(() => import('../../../components/Tabla'), { ssr: false, loading: () =><p>Cargando...</p> })
+ 
+ const Empresas = () => {
+  const [empresas, setEmpresas] = useState(0); 
+  useEffect(() => {
+    const cargarEmpresas = async() =>{
+      const {data} = await axios.get('http://localhost:3000/api/seguridad/empresa'); 
+      setEmpresas(data); 
+  }
+  cargarEmpresas().catch((e) => {
+    console.error('An error occurred while fetching the data: ', e)
+  })
+  }, [])
+
   return (
    <>
      <h5 className="text-center">Sucursales</h5>
-     <Suspense fallback={<h1>CARGANDO...</h1>}>
-     <Tabla datos={empresas}/>
-     </Suspense>
+     {
+      empresas ? ( <Tabla datos={empresas}/>) : (<Spin/>)
+     }
    </>
 
   )
