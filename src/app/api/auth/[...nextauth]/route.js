@@ -18,9 +18,9 @@ const handler = NextAuth({
             if(objetoUsuario == undefined) throw new Error("Credenciales invalidas"); 
             const passworMatch = await bcrypt.compare(credentials.password, objetoUsuario.clave);
             if(!passworMatch) throw new Error("Credenciales invalidas"); 
-            await pool.query('INSERT INTO Bitacora SET ?',{
-              idUsuario:objetoUsuario.idUsuario
-            })
+            // await pool.query('INSERT INTO Bitacora SET ?',{
+            //   idUsuario:objetoUsuario.idUsuario
+            // })
             return  objetoUsuario; 
           }
         })

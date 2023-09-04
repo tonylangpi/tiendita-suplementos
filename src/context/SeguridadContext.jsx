@@ -1,5 +1,5 @@
-import { createContext, useState, useEffect, useContext } from "react";
-
+"use client";
+import { createContext, useState, useContext } from "react";
 export const SeguridadContext = createContext();
 export const useSecurity = () => useContext(SeguridadContext);
 export function SeguridadContextProvider(props) {
