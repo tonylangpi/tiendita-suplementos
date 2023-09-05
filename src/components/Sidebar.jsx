@@ -27,12 +27,8 @@ const Slidebar = () => {
                 <Sidebar.Item as={Link} href="/" icon={HiChartPie}>
                       INICIO
                 </Sidebar.Item>
-                <Sidebar.Item icon={HiShoppingBag} as={Link} href="/moduloSeguridad">Seguridad</Sidebar.Item>
-                <Sidebar.Collapse icon={HiUser} label="Seguridad">
-                  <Sidebar.Item as={Link} href="/register">USUARIOS</Sidebar.Item>
-                  <Sidebar.Item href="#">Roles</Sidebar.Item>
-                  <Sidebar.Item as={Link} href="/perfil">Perfil</Sidebar.Item>
-                </Sidebar.Collapse>
+                <Sidebar.Item icon={HiShoppingBag} as={Link} href="/moduloProductos">Productos</Sidebar.Item>
+                <Sidebar.Item icon={HiUser} as={Link} href="/moduloSeguridad">Seguridad</Sidebar.Item>
                 <Sidebar.Item>
                   <Button
                     onClick={() => {
