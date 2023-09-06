@@ -1,22 +1,24 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo} from "react";
 import { Toaster, toast } from 'sonner';
+import { useSession } from "next-auth/react";
 import { MaterialReactTable } from "material-react-table";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios, { AxiosError } from "axios";
-import { Button, Modal, Label, TextInput, Textarea } from "flowbite-react";
+import { Button, Modal, Label, TextInput} from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-export default function Tabla({datos}) {
+export default function TablaMarcas({datos}) {
   const [openModal, setOpenModal] = useState();
   const router = useRouter();
   const props = { openModal, setOpenModal };
-
+  const { data: session} = useSession();
+  let idUsuario = session?.user?.idUsuario; 
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
     //funciona que captura datos y actualiza los datos a la BD mediante la api
-    let res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}empresas/updateEmpresa`, values);
-    toast(res.data?.message,{style:{background:'yellow'}});
+    let res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}marcas/updateMarca`, values);
+    toast(res.data?.message, {style:{background:'yellow'}});
     router.refresh();
     exitEditingMode();
   };
@@ -25,7 +27,7 @@ export default function Tabla({datos}) {
     //configuracion de las columnas que vienen en la consulta
     () => [
       {
-        accessorKey: "idEmpresa", //simple recommended way to define a column
+        accessorKey: "idMarca", //simple recommended way to define a column
         header: "ID",
         enableEditing: false, //disable editing on this column
         enableSorting: false,
@@ -33,15 +35,17 @@ export default function Tabla({datos}) {
         Cell: ({ renderedCellValue }) => <strong>{renderedCellValue}</strong>, //optional custom cell render
       },
       {
-        accessorKey: "nombre", //alternate way
-        header: "NombreEmpresa",
-        Header: <i style={{ color: "blue" }}>NombreEmpresa</i>, //optional custom markup
+        accessorKey: "marca", //alternate way
+        header: "Marca",
+        Header: <i style={{ color: "blue" }}>Marca</i>, //optional custom markup
       },
       {
-        accessorKey: "direccion", //alternate way
-        header: "Direccion",
-        Header: <i style={{ color: "red" }}>Direccion</i>, //optional custom markup
-      },
+        accessorKey: "CreadoPor", //alternate way
+        header: "CreadoPor",
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
+        Header: <i style={{ color: "blue" }}>Usuario que lo creo</i>, //optional custom markup
+      }
     ],
     []
   );
@@ -50,11 +54,11 @@ export default function Tabla({datos}) {
     e.preventDefault();
     const FormDAta = new FormData(e.currentTarget);
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}empresas/createEmpresa`, {
-        nombre: FormDAta.get("nombre"),
-        direccion: FormDAta.get("direccion"),
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}marcas/createMarca`, {
+        marca: FormDAta.get("marca"),
+        idUsuario: idUsuario
       });
-      toast(response?.data?.message);
+      toast(response.data?.message);//le agregamos lo que retorna la api al toast de aviso
       router.refresh();
       props.setOpenModal(undefined)
     } catch (error) {
@@ -64,7 +68,7 @@ export default function Tabla({datos}) {
       }
     }
   };
-
+  
   return (
     <>
     <Toaster position="top-center" offset="80px"/>
@@ -72,26 +76,14 @@ export default function Tabla({datos}) {
         show={props.openModal === "default"}
         onClose={() => props.setOpenModal(undefined)}
       >
-        <Modal.Header>Agregar Sucursal</Modal.Header>
+        <Modal.Header>Agregar Marca</Modal.Header>
         <Modal.Body>
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="nombre" value="Nombre" />
+                <Label htmlFor="marca" value="marca" />
               </div>
-              <TextInput id="nombre" required type="text" name="nombre" />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="direccion" value="Direccion empresa" />
-              </div>
-              <Textarea
-                id="direccion"
-                name="direccion"
-                placeholder="zona 14 mixco etc..."
-                required
-                rows={4}
-              />
+              <TextInput id="marca" required type="text" name="marca" />
             </div>
             <Button type="submit">Agregar</Button>
           </form>
@@ -115,17 +107,17 @@ export default function Tabla({datos}) {
               onClick={async () => {
                 if (
                   !confirm(
-                    `Deseas eliminar la sucursal: ${row.getValue("nombre")}`
+                    `Deseas eliminar la marca: ${row.getValue("marca")}`
                   )
                 ) {
                   return;
                 }
-                let res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}empresas/deleteEmpresa/${row.getValue(
-                    "idEmpresa"
+                let res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}marcas/deleteMarca/${row.getValue(
+                    "idMarca"
                   )}`
                 );
                  if(res.status === 204){
-                    toast("Empresa Borrada",{style:{background:'red'}});
+                    toast("Marca Borrada",{style:{background:'red'}});
                     router.refresh();
                  }
               }}

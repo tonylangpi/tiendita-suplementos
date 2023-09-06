@@ -11,7 +11,6 @@ export default function SeguridadLayout({children}){
       <Navbar.Collapse>
         <Navbar.Link
           as={Link}
-          active
           href="/moduloProductos"
         >
           <p>
@@ -26,13 +25,13 @@ export default function SeguridadLayout({children}){
             Categorias
           </p>
         </Navbar.Link>
-        <Navbar.Link as={Link} href="#">
+        <Navbar.Link as={Link} href="/moduloProductos/presentaciones">
           Presentaciones
         </Navbar.Link>
-        <Navbar.Link href="#">
+        <Navbar.Link  as={Link} href="/moduloProductos/marcas">
           Marcas
         </Navbar.Link>
-        <Navbar.Link href="#">
+        <Navbar.Link  as={Link} href="/moduloProductos/sabores">
           Sabores
         </Navbar.Link>
       </Navbar.Collapse>

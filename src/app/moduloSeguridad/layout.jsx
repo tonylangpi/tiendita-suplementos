@@ -31,11 +31,8 @@ export default function SeguridadLayout({children}){
         <Navbar.Link as={Link} href="/moduloSeguridad/roles">
           Roles
         </Navbar.Link>
-        <Navbar.Link href="#">
-          Marcas
-        </Navbar.Link>
-        <Navbar.Link href="#">
-          Sabores
+        <Navbar.Link as={Link} href="/moduloSeguridad/perfil">
+          Perfil
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
