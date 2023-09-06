@@ -10,7 +10,7 @@ const SaboresPage = async() => {
     const sabores = await cargarSabores(); 
   return (
      <>
-        <h1>Marcas</h1>
+        <h1>Sabores</h1>
         {
             sabores ? <TablaSabores datos={sabores}/> : <Spin/>
         }

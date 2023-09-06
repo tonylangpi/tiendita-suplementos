@@ -1,35 +1,24 @@
-'use client';
-import {useState} from 'react'
-import { Button, Modal } from 'flowbite-react';
+"use client";
+import { useSession } from "next-auth/react";
+import { Card } from "flowbite-react";
 const Homepage = () => {
-  const [openModal, setOpenModal] = useState();
-  const props = { openModal, setOpenModal };
+  const { data: session } = useSession();
 
   return (
     <>
-      <Button onClick={() => props.setOpenModal('default')}>Toggle modal</Button>
-      <Modal show={props.openModal === 'default'} onClose={() => props.setOpenModal(undefined)}>
-        <Modal.Header>Terms of Service</Modal.Header>
-        <Modal.Body>
-          <div className="space-y-6">
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              With less than a month to go before the European Union enacts new consumer privacy laws for its citizens,
-              companies around the world are updating their terms of service agreements to comply.
-            </p>
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to
-              ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as
-              possible of high-risk data breaches that could personally affect them.
-            </p>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => props.setOpenModal(undefined)}>I accept</Button>
-          <Button color="gray" onClick={() => props.setOpenModal(undefined)}>
-            Decline
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <section className="flex justify-center items-center h-screen">
+      <Card>
+        <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
+          Bienvenido
+        </h1>
+        <p className="mb-5 text-base text-gray-500 dark:text-gray-400 sm:text-lg">
+          {session?.user?.nombre}
+        </p>
+        <p className="mb-5 text-base text-gray-500 dark:text-gray-400 sm:text-lg">
+          {session?.user?.NombreEmpresa}
+        </p>
+      </Card>
+    </section>
     </>
 
   )

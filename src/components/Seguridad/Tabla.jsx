@@ -110,29 +110,6 @@ export default function Tabla({datos}) {
         renderRowActions={({ row, table }) => (
           <div className="flex">
             <Button
-              color="failure"
-              pill
-              onClick={async () => {
-                if (
-                  !confirm(
-                    `Deseas eliminar la sucursal: ${row.getValue("nombre")}`
-                  )
-                ) {
-                  return;
-                }
-                let res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}empresas/deleteEmpresa/${row.getValue(
-                    "idEmpresa"
-                  )}`
-                );
-                 if(res.status === 204){
-                    toast("Empresa Borrada",{style:{background:'red'}});
-                    router.refresh();
-                 }
-              }}
-            >
-              <DeleteIcon />
-            </Button>
-            <Button
               color="warning"
               pill
               onClick={() => {

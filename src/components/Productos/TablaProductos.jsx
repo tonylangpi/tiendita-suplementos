@@ -6,15 +6,14 @@ import { MaterialReactTable } from "material-react-table";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios, { AxiosError } from "axios";
-import { Button, Modal, Label, TextInput, Textarea } from "flowbite-react";
+import { Button, Modal, Label, TextInput, } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 export default function TablaCategorias({datos}) {
   const [openModal, setOpenModal] = useState();
   const router = useRouter();
   const props = { openModal, setOpenModal };
-  const { data: session} = useSession();
-  let idUsuario = session?.user?.idUsuario; 
+
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
     //funciona que captura datos y actualiza los datos a la BD mediante la api
     let res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}categorias/updateCategoria`, values);
@@ -27,8 +26,8 @@ export default function TablaCategorias({datos}) {
     //configuracion de las columnas que vienen en la consulta
     () => [
       {
-        accessorKey: "idCategoria", //simple recommended way to define a column
-        header: "ID",
+        accessorKey: "codigo", //simple recommended way to define a column
+        header: "CODIGO SKU",
         enableEditing: false, //disable editing on this column
         enableSorting: false,
         muiTableHeadCellProps: { sx: { color: "green" } }, //custom props
@@ -37,56 +36,63 @@ export default function TablaCategorias({datos}) {
       {
         accessorKey: "descripcion", //alternate way
         header: "Descripcion",
+        Header: <i style={{ color: "blue" }}>Descripcion</i>, //optional custom markup
+      },
+      {
+        accessorKey: "precio_venta", //alternate way
+        header: "Precio Venta",
+        Header: <i style={{ color: "blue" }}>Precio Venta</i>, //optional custom markup
+      },
+      {
+        accessorKey: "stock", //alternate way
+        header: "stock",
+        Header: <i style={{ color: "blue" }}>stock</i>, //optional custom markup
+      },
+      {
+        accessorKey: "stock_minimo", //alternate way
+        header: "stock_minimo",
+        Header: <i style={{ color: "blue" }}>stock_minimo</i>, //optional custom markup
+      },
+      {
+        accessorKey: "lote", //alternate way
+        header: "lote",
+        Header: <i style={{ color: "blue" }}>Lote</i>, //optional custom markup
+      },
+      {
+        accessorKey: "Categoria", //alternate way
+        header: "Categoria",
         Header: <i style={{ color: "blue" }}>Categoria</i>, //optional custom markup
-      }
+      },
+      {
+        accessorKey: "marca", //alternate way
+        header: "marca",
+        Header: <i style={{ color: "blue" }}>Marca</i>, //optional custom markup
+      },
     ],
     []
   );
   //configuracion del envio de datos post crear una nueva empresa
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const FormDAta = new FormData(e.currentTarget);
-    try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}categorias/createCategoria`, {
-        descripcion: FormDAta.get("descripcion"),
-        idUsuario: idUsuario
-      });
-      toast(response.data?.message);
-      router.refresh();
-      props.setOpenModal(undefined)
-    } catch (error) {
-      console.error(error);
-      if (error instanceof AxiosError) {
-        toast(error.response?.data.message);
-      }
-    }
-  };
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     const FormDAta = new FormData(e.currentTarget);
+//     try {
+//       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}categorias/createCategoria`, {
+//         descripcion: FormDAta.get("descripcion"),
+//         idUsuario: idUsuario
+//       });
+//       toast(response.data?.message);
+//       router.refresh();
+//       props.setOpenModal(undefined)
+//     } catch (error) {
+//       console.error(error);
+//       if (error instanceof AxiosError) {
+//         toast(error.response?.data.message);
+//       }
+//     }
+//   };
   
   return (
     <>
-    <Toaster position="top-center" offset="80px"/>
-      <Modal
-        show={props.openModal === "default"}
-        onClose={() => props.setOpenModal(undefined)}
-      >
-        <Modal.Header>Agregar Categoria</Modal.Header>
-        <Modal.Body>
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="descripcion" value="descripcion" />
-              </div>
-              <TextInput id="descripcion" required type="text" name="descripcion" />
-            </div>
-            <Button type="submit">Agregar</Button>
-          </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button color="gray" onClick={() => props.setOpenModal(undefined)}>
-            Cancelar
-          </Button>
-        </Modal.Footer>
-      </Modal>
       <MaterialReactTable
         columns={columns}
         enableRowActions
@@ -97,41 +103,19 @@ export default function TablaCategorias({datos}) {
             <Button
               color="failure"
               pill
-              onClick={async () => {
-                if (
-                  !confirm(
-                    `Deseas eliminar la categoria: ${row.getValue("descripcion")}`
-                  )
-                ) {
-                  return;
-                }
-                let res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}categorias/deleteCategoria/${row.getValue(
-                    "idCategoria"
-                  )}`
-                );
-                 if(res.status === 204){
-                    toast("Categoria Borrada",{style:{background:'red'}});
-                    router.refresh();
-                 }
-              }}
+              onClick={() => {router.push(`/moduloProductos/sabores/${row.getValue("codigo")}`)}}
             >
-              <DeleteIcon />
+              SABORES
             </Button>
             <Button
               color="warning"
               pill
-              onClick={() => {
-                table.setEditingRow(row);
-              }}
             >
-              <EditIcon />
+              PRESENTACIONES
             </Button>
           </div>
         )}
         positionActionsColumn="last"
-        renderTopToolbarCustomActions={() => (
-          <Button onClick={() => props.setOpenModal("default")}>Agregar</Button>
-        )}
         localization={{
           actions: "Acciones",
           and: "y",

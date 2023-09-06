@@ -3,7 +3,6 @@ import { useSession } from "next-auth/react";
 import { Card } from "flowbite-react";
 const PerfilPage = () => {
   const { data: session } = useSession();
-  //let idUsuario = session?.user?.idUsuario;
   return (
     <section className="flex justify-center items-center min-w-full">
       <Card>
