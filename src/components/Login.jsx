@@ -53,7 +53,7 @@ const CardLogin = () => {
               name="password"
             />
           </div>
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Ingresar</Button>
         </form>
       </Card>
       <Image

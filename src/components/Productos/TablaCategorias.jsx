@@ -36,7 +36,7 @@ export default function TablaCategorias({datos}) {
       },
       {
         accessorKey: "descripcion", //alternate way
-        header: "NombreEmpresa",
+        header: "Descripcion",
         Header: <i style={{ color: "blue" }}>Categoria</i>, //optional custom markup
       }
     ],

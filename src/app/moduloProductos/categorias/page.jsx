@@ -1,4 +1,4 @@
-import TablaCategorias from '../../../components/TablaCategorias';
+import TablaCategorias from '../../../components/Productos/TablaCategorias';
 import axios from 'axios'; 
 import Spin from '../../../components/Spinner';
 

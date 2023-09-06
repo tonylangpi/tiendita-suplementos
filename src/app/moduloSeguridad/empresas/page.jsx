@@ -1,7 +1,6 @@
 //import  {useEffect} from 'react'
-import Tabla from '../../../components/Tabla';
+import Tabla from '../../../components/Seguridad/Tabla';
 import axios from 'axios'; 
-import { useSecurity } from "../../../context/SeguridadContext";
 import Spin from '../../../components/Spinner';
 // import dynamic from 'next/dynamic';
 //  const Tabla = dynamic(() => import('../../../components/Tabla'), { ssr: false, loading: () =><p>Cargando...</p> })
