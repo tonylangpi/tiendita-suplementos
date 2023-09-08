@@ -14,14 +14,6 @@ export default function TablaCategorias({datos}) {
   const router = useRouter();
   const props = { openModal, setOpenModal };
 
-  const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
-    //funciona que captura datos y actualiza los datos a la BD mediante la api
-    let res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}categorias/updateCategoria`, values);
-    toast(res.data?.message, {style:{background:'yellow'}});
-    router.refresh();
-    exitEditingMode();
-  };
-
   const columns = useMemo(
     //configuracion de las columnas que vienen en la consulta
     () => [
@@ -68,6 +60,16 @@ export default function TablaCategorias({datos}) {
         header: "marca",
         Header: <i style={{ color: "blue" }}>Marca</i>, //optional custom markup
       },
+      {
+        accessorKey: "sabor", //alternate way
+        header: "Sabor",
+        Header: <i style={{ color: "blue" }}>Sabor</i>, //optional custom markup
+      },
+      {
+        accessorKey: "presentacion", //alternate way
+        header: "presentacion",
+        Header: <i style={{ color: "blue" }}>Presentacion</i>, //optional custom markup
+      },
     ],
     []
   );
@@ -93,11 +95,11 @@ export default function TablaCategorias({datos}) {
   
   return (
     <>
-      <MaterialReactTable
+     <div className="max-w-2xl">
+     <MaterialReactTable
         columns={columns}
         enableRowActions
         data={datos}
-        onEditingRowSave={handleSaveRowEdits}
         renderRowActions={({ row, table }) => (
           <div className="flex">
             <Button
@@ -105,13 +107,7 @@ export default function TablaCategorias({datos}) {
               pill
               onClick={() => {router.push(`/moduloProductos/sabores/${row.getValue("codigo")}`)}}
             >
-              SABORES
-            </Button>
-            <Button
-              color="warning"
-              pill
-            >
-              PRESENTACIONES
+              VER
             </Button>
           </div>
         )}
@@ -210,6 +206,8 @@ export default function TablaCategorias({datos}) {
           unsorted: "Sin ordenar",
         }}
       />
+     </div>
+     
     </>
   );
 }
