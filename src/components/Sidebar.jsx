@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 
 const Slidebar = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   let nombreNivel = session?.user?.nombreNivel;
   return (() => {
     switch (nombreNivel) {
@@ -24,16 +24,12 @@ const Slidebar = () => {
             <Sidebar aria-label="Sidebar with multi-level dropdown example h-screen">
               <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                  <Sidebar.Item as={Link} href="/" icon={HiChartPie}>
-                      Dashboard
-                  </Sidebar.Item>
-                  <Sidebar.Item
-                    as={Link}
-                    href="/moduloProductos"
-                    icon={HiShoppingBag}
-                  >
-                      Productos
-                  </Sidebar.Item>
+                 <Sidebar.Item as={Link} href="/" icon={HiChartPie}>
+                  DASHBOARD
+                 </Sidebar.Item>
+                 <Sidebar.Item as={Link} href="/moduloProductos" icon={HiShoppingBag}>
+                 PRODUCTOS
+                 </Sidebar.Item>
                   <Sidebar.Item as={Link} href="/moduloSeguridad" icon={HiUser} >
                       Seguridad
                   </Sidebar.Item>
