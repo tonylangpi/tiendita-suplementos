@@ -27,6 +27,7 @@
     "react-hook-form": "^7.46.1",
     "serverless-mysql": "^1.5.5",
     "sonner": "^0.7.0",
+    "swr": "^2.2.4",
     "tailwindcss": "3.3.3"
   }
 }

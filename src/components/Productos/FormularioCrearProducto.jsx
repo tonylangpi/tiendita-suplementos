@@ -169,7 +169,7 @@ const FormularioCrearProducto = ({ marcas, categorias, presentaciones, sabores }
             <Select id="idMarca" name="idMarca" {...register("idMarca")}>
               {marcas.map((marc, index) => (
                 <option key={index} value={marc.idMarca}>
-                  {marc.marca}
+                  {marc.Marca}
                 </option>
               ))}
             </Select>

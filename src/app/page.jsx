@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
-const Homepage = () => {
+function HomePage(){
   const { data: session } = useSession();
 
   return (
@@ -20,4 +20,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default HomePage;

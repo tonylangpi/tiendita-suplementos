@@ -6,12 +6,12 @@ import CardDetalle from '../../../../components/Productos/CardDetalleProd.jsx';
 async function cargarDetalleProducto(codigoProd){
   const session = await getServerSession(authOptions);
   const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}productos/oneProducto`,{
-    idEmpresa:session?.user?.idEmpresa,
-    codProd:codigoProd
+      idEmpresa:session?.user?.idEmpresa,
+      codProd:codigoProd
   }); 
   return data; 
 }
-const DetalleProd = async({params}) => {
+async function DetalleProd({params}){
   const detalleProd = await cargarDetalleProducto(params.codigoProd);
   let objetoDetalleProd = detalleProd[0];
   if(objetoDetalleProd == undefined) throw new Error("objeto vacio"); 

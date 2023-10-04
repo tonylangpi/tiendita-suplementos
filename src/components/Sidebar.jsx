@@ -1,6 +1,6 @@
 "use client";
 import { useSession, signOut } from "next-auth/react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Sidebar, Button } from "flowbite-react";
 import {
   HiArrowSmRight,
@@ -16,6 +16,7 @@ import Link from "next/link";
 const Slidebar = () => {
   const { data: session } = useSession();
   let nombreNivel = session?.user?.nombreNivel;
+  const router = useRouter();
   return (() => {
     switch (nombreNivel) {
       case "ADMINISTRACION": //si el usuario esta autenticado retorna el dashboard
@@ -24,15 +25,54 @@ const Slidebar = () => {
             <Sidebar aria-label="Sidebar with multi-level dropdown example h-screen">
               <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                 <Sidebar.Item as={Link} href="/" icon={HiChartPie}>
-                  DASHBOARD
-                 </Sidebar.Item>
-                 <Sidebar.Item as={Link} href="/moduloProductos" icon={HiShoppingBag}>
-                 PRODUCTOS
-                 </Sidebar.Item>
-                  <Sidebar.Item as={Link} href="/moduloSeguridad" icon={HiUser} >
-                      Seguridad
+                  <Sidebar.Item as={Link} href="/" icon={HiChartPie}>
+                    DAHSHBOARD
                   </Sidebar.Item>
+                  <Sidebar.Collapse icon={HiViewBoards} label="Productos">
+                    <Sidebar.Item as={Link} href="/moduloProductos">
+                      Productos
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloProductos/categorias">
+                      categorias
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloProductos/marcas">
+                      marcas
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      as={Link}
+                      href="/moduloProductos/presentaciones"
+                    >
+                      presentaciones
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloProductos/sabores">
+                      sabores
+                    </Sidebar.Item>
+                  </Sidebar.Collapse>
+                  <Sidebar.Collapse icon={HiShoppingBag} label="Compras">
+                    <Sidebar.Item as={Link} href="/moduloCompras">
+                      Compras
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloCompras/proveedores">
+                      proveedores
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloCompras/tipocompras">
+                      tipo de compras
+                    </Sidebar.Item>
+                  </Sidebar.Collapse>
+                  <Sidebar.Collapse icon={HiUser} label="Seguridad">
+                    <Sidebar.Item as={Link} href="/moduloSeguridad">
+                      usuarios
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloSeguridad/empresas">
+                      empresas
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloSeguridad/roles">
+                      roles
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloSeguridad/perfil">
+                      perfil
+                    </Sidebar.Item>
+                  </Sidebar.Collapse>
                   <Sidebar.Item>
                     <Button
                       onClick={() => {

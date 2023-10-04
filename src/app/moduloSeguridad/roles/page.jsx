@@ -1,6 +1,5 @@
-import React from 'react'
 
-const Roles = () => {
+function Roles(){
   return (
     <div>Roles</div>
   )

@@ -23,7 +23,7 @@ const CardLogin = () => {
   };
   return (
     <> 
-      <div className="flex items-center justify-center h-screen gap-3">
+      <section className="flex items-center justify-center h-screen gap-3">
       <Card className="w-96">
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           {error && (
@@ -58,11 +58,12 @@ const CardLogin = () => {
       </Card>
       <Image
       src={Logo}
-      width={600}
+      width={500}
       height={500}
       alt="Picture of the author"
+      priority
     />
-    </div>
+    </section>
     </>
   );
 };

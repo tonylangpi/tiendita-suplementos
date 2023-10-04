@@ -1,6 +1,4 @@
-import React from 'react'
-
-const Usuarios = () => {
+function Usuarios(){
   return (
     <div>Usuarios</div>
   )

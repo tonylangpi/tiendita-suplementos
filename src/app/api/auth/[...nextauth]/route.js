@@ -2,7 +2,6 @@ import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"; 
 import  {pool}  from '../../../../config/db';
 import bcrypt from 'bcryptjs'; 
-
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -43,7 +42,7 @@ export const authOptions = {
   pages: {
     signIn : '/login'
   }
-}
+};
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }
