@@ -9,10 +9,7 @@ import { Button, Modal, Label, TextInput, Textarea } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
-async function cargarEmpresas(){
-  const {data} = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}empresas/all`); 
-  return data; 
-}
+
 function EmpresasPage(){
   const [openModal, setOpenModal] = useState();
   const router = useRouter();
@@ -20,7 +17,7 @@ function EmpresasPage(){
   /***peticion a la api para las empresas get */
   const { data, mutate} = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}empresas/all`,{
-      revalidateIfStale: false,
+      revalidateIfStale: true,
       revalidateOnFocus: false,
       revalidateOnReconnect: false
     }
@@ -120,8 +117,15 @@ function EmpresasPage(){
         data ? (<MaterialReactTable
         columns={columns}
         enableRowActions
-        data={data}
+        data={data ? data : []}
         onEditingRowSave={handleSaveRowEdits}
+        enableDensityToggle={false}
+        initialState={{ density: "compact" }}
+              muiTableProps={{
+                sx: {
+                  border: "1px solid rgba(81, 81, 81, 1)",
+                },
+              }}
         renderRowActions={({ row, table }) => (
           <div className="flex">
             <Button
