@@ -1,17 +1,11 @@
-//import mysql from 'serverless-mysql'
-import {createPool} from 'mysql2/promise'
-const pool = createPool({
-    host: process.env.HOST,
-    user: process.env.USER,
-    password: process.env.PASS,
-    port:3306,
-    database:process.env.DATABASE
+import mysql from 'mysql2/promise';
+
+const pool = mysql.createPool({
+    host:process.env.BD_HOST,
+    user:process.env.BD_USER,
+    password:process.env.BD_PASS,
+    port:process.env.BD_PORT,
+    database:process.env.BD_DATABASE
 });
-pool.getConnection((error) => {
-    if (error) {
-      console.error('El error de conexión es: ' + error);
-      return;
-    }
-    console.log('Conectado a la base de datos RAILWAY.');
-  });
+
 export {pool}

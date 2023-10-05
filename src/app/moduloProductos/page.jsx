@@ -249,11 +249,11 @@ function ProductosPage() {
               name="idCategoria"
               {...register("idCategoria")}
             >
-              {data?.categorias.map((cat, index) => (
+              { data.categorias ? (data?.categorias.map((cat, index) => (
                 <option key={index} value={cat.idCategoria}>
                   {cat.descripcion}
                 </option>
-              ))}
+              ))) : (<option>NO HAY REGISTROS</option>) }
             </Select>
           </div>
           <div>
@@ -261,11 +261,11 @@ function ProductosPage() {
               <Label htmlFor="idMarca" value="Selecciona una Marca" />
             </div>
             <Select id="idMarca" name="idMarca" {...register("idMarca")}>
-              {data?.marcas.map((marc, index) => (
+              { data.marcas ? (data?.marcas.map((marc, index) => (
                 <option key={index} value={marc.idMarca}>
                   {marc.Marca}
                 </option>
-              ))}
+              ))) : (<option>no hay registros</option>)  }
             </Select>
           </div>
           <div>
@@ -273,11 +273,11 @@ function ProductosPage() {
               <Label htmlFor="idPresentacion" value="Selecciona una Presentación" />
             </div>
             <Select id="idPresentacion" name="idPresentacion" {...register("idPresentacion")}>
-              {data?.presentaciones.map((pres, index) => (
+              {data.presentaciones ? (data?.presentaciones.map((pres, index) => (
                 <option key={index} value={pres.idPresentacion}>
                   {pres.presentacion}
                 </option>
-              ))}
+              ))) : (<option>no hay registros</option>)}
             </Select>
           </div>
           <div>
@@ -285,11 +285,11 @@ function ProductosPage() {
               <Label htmlFor="idSabor" value="Selecciona un sabor" />
             </div>
             <Select id="idSabor" name="idSabor" {...register("idSabor")}>
-              {data?.sabores.map((pres, index) => (
+              { data.sabores ? (data?.sabores.map((pres, index) => (
                 <option key={index} value={pres.idSabor}>
                   {pres.sabor}
                 </option>
-              ))}
+              ))) : (<option>no hay registros</option>)}
             </Select>
           </div>
           <Button type="submit">Crear</Button>

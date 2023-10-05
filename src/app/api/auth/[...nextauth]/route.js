@@ -11,11 +11,11 @@ export const authOptions = {
          password: {label:"Password", type: "password"}
       },
       async authorize(credentials) {
-        const [rows] = await pool.query(`SELECT usu.idUsuario,usu.nombre,usu.correo,usu.celular, usu.clave, niv.nombreNivel, Rol.descripcion as rol, em.idEmpresa, em.nombre as NombreEmpresa FROM usuario usu 
+        const [rows] = await pool.query(`SELECT usu.idUsuario,usu.nombre,usu.correo,usu.celular, usu.clave, niv.nombreNivel, Rol.descripcion as rol, em.idEmpresa, em.nombre as NombreEmpresa FROM Usuario usu 
         inner join Rol  on Rol.idRol = usu.idRol 
         inner join Nivel niv on niv.idNivel = Rol.idNivel 
-        inner join empresas_usuario eu on eu.idUsuario = usu.idUsuario
-        inner join empresa em on em.idEmpresa = eu.idEmpresa
+        inner join Empresas_Usuario eu on eu.idUsuario = usu.idUsuario
+        inner join Empresa em on em.idEmpresa = eu.idEmpresa
         WHERE usu.correo = ? `, [credentials?.email]);
         let usuarioEncontrado = rows;
         let objetoUsuario = usuarioEncontrado[0];
