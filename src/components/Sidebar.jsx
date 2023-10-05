@@ -88,8 +88,59 @@ const Slidebar = () => {
             </Sidebar>
           </div>
         );
-      case "loading":
-        return null;
+      case "USUARIO FINAL":
+        return <div className="w-72 h-screen">
+        <Sidebar aria-label="Sidebar with multi-level dropdown example h-screen">
+          <Sidebar.Items>
+            <Sidebar.ItemGroup>
+              <Sidebar.Item as={Link} href="/" icon={HiChartPie}>
+                DAHSHBOARD
+              </Sidebar.Item>
+              <Sidebar.Collapse icon={HiViewBoards} label="Productos">
+                <Sidebar.Item as={Link} href="/moduloProductos">
+                  Productos
+                </Sidebar.Item>
+                <Sidebar.Item as={Link} href="/moduloProductos/categorias">
+                  categorias
+                </Sidebar.Item>
+                <Sidebar.Item as={Link} href="/moduloProductos/marcas">
+                  marcas
+                </Sidebar.Item>
+                <Sidebar.Item
+                  as={Link}
+                  href="/moduloProductos/presentaciones"
+                >
+                  presentaciones
+                </Sidebar.Item>
+                <Sidebar.Item as={Link} href="/moduloProductos/sabores">
+                  sabores
+                </Sidebar.Item>
+              </Sidebar.Collapse>
+              <Sidebar.Collapse icon={HiShoppingBag} label="Compras">
+                <Sidebar.Item as={Link} href="/moduloCompras">
+                  Compras
+                </Sidebar.Item>
+                <Sidebar.Item as={Link} href="/moduloCompras/proveedores">
+                  proveedores
+                </Sidebar.Item>
+                <Sidebar.Item as={Link} href="/moduloCompras/tipocompras">
+                  tipo de compras
+                </Sidebar.Item>
+              </Sidebar.Collapse>
+              <Sidebar.Item>
+                <Button
+                  onClick={() => {
+                    signOut();
+                  }}
+                  color="failure"
+                >
+                  Cerrar Sesion
+                </Button>
+              </Sidebar.Item>
+            </Sidebar.ItemGroup>
+          </Sidebar.Items>
+        </Sidebar>
+      </div>;
       case "unauthenticated":
         return null;
       default:
