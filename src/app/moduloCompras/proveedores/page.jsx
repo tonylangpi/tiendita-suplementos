@@ -259,19 +259,12 @@ function ProveedoresPage(){
               pill
               onClick={async () => {
                 if (
-                  !confirm(`Deseas eliminar el proveedor: ${row.getValue("marca")}`)
+                  !confirm(`Deseas eliminar el proveedor: ${row.getValue("nombreProve")}`)
                 ) {
                   return;
                 }
-                let res = await axios.delete(
-                  `${
-                    process.env.NEXT_PUBLIC_API_URL
-                  }marcas/deleteMarca/${row.getValue("idMarca")}`
-                );
-                if (res.status === 204) {
-                  toast("Marca Borrada", { style: { background: "red" } });
-                  router.refresh();
-                }
+                  toast("Evaluar si es factible borrar proveedor", { style: { background: "red" } });
+                  //router.refresh();
               }}
             >
               <DeleteIcon />
