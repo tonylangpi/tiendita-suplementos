@@ -253,23 +253,6 @@ function ProveedoresPage(){
         onEditingRowSave={handleSaveRowEdits}
         renderRowActions={({ row, table }) => (
           <div className="flex">
-          <Tooltip content="Eliminar">
-          <Button
-              color="failure"
-              pill
-              onClick={async () => {
-                if (
-                  !confirm(`Deseas eliminar el proveedor: ${row.getValue("nombreProve")}`)
-                ) {
-                  return;
-                }
-                  toast("Evaluar si es factible borrar proveedor", { style: { background: "red" } });
-                  //router.refresh();
-              }}
-            >
-              <DeleteIcon />
-            </Button>
-          </Tooltip>
           <Tooltip content="Cambiar Estado">
           <Button
               gradientMonochrome="failure"
