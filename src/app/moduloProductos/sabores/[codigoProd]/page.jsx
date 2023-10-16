@@ -1,6 +1,5 @@
 "use client";
 import { useSession } from "next-auth/react";
-import CardDetalle from "../../../../components/Productos/CardDetalleProd.jsx";
 import useSWR from "swr";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
