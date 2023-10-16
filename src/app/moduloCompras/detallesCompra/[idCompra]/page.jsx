@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Toaster, toast } from "sonner";
-import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { MaterialReactTable } from "material-react-table";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
@@ -18,15 +18,15 @@ import {
   Tooltip,
 } from "flowbite-react";
 import Delete from "@mui/icons-material/Delete";
-export default function Compras() {
+
+const DetallesCompras = ({ params }) => {
   const router = useRouter();
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
   const { data: session } = useSession();
-  let idEmpresa = session?.user?.idEmpresa;
-  let idUsuario = session?.user?.idUsuario;
+  let idEmpresa = session?.user?.idEmpresa; //obtenemos la empresa del que esta logueado en la app
   const { data, mutate } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}encabezadosCompra/all/${idEmpresa}`,
+    `${process.env.NEXT_PUBLIC_API_URL}detallesCompras/all?idEmpresa=${idEmpresa}&idEncabezado=${params.idCompra}`,
     {
       revalidateIfStale: true,
       revalidateOnFocus: false,
@@ -36,38 +36,67 @@ export default function Compras() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    getValues,
+    formState: { errors, isValid},
     reset,
     setValue,
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      Tipo_Compra: 0,
-      Fecha_compra: "",
-      ProveedorId: "",
-      idEmpresa: idEmpresa,
-      idUsuario: idUsuario,
+      idEncabezado: params.idCompra ? params.idCompra : 0,
+      idProducto: "",
+      Cantidad: 0,
+      precio_costo: 0,
+      ganancia: 0,
+      precio_venta: 0,
+      precio_mayoreo: "",
+      idEmpresa:idEmpresa
     },
   });
-  const columnsProveedores = useMemo(
+  const columnsProductos = useMemo(
     //configuracion de las columnas que vienen en la consulta
     () => [
       {
-        accessorKey: "idProveedor", //simple recommended way to define a column
-        header: "ID",
+        accessorKey: "codigo", //simple recommended way to define a column
+        header: "CODIGO",
         enableEditing: false, //disable editing on this column
         enableSorting: false,
         muiTableHeadCellProps: { sx: { color: "green" } }, //custom props
         Cell: ({ renderedCellValue }) => <strong>{renderedCellValue}</strong>, //optional custom cell render
       },
       {
-        accessorKey: "nombreProve", //alternate way
-        header: "Proveedor",
-        Header: <i style={{ color: "blue" }}>Proveedor</i>, //optional custom markup
+        accessorKey: "descripcion", //alternate way
+        header: "Descripcion",
+        Header: <i style={{ color: "blue" }}>Descripcion</i>, //optional custom markup
       },
       {
+        accessorKey: "precio_costo", //alternate way
+        header: "precio_costo",
+        Header: <i style={{ color: "blue" }}>Precio Costo</i>, //optional custom markup
+      },
+      {
+        accessorKey: "precio_venta", //alternate way
+        header: "precio_venta",
+        Header: <i style={{ color: "blue" }}>Precio Venta</i>, //optional custom markup
+      },
+      {
+        accessorKey: "precio_mayoreo", //alternate way
+        header: "precio_mayoreo",
+        Header: <i style={{ color: "blue" }}>Precio mayoreo</i>, //optional custom markup
+      },
+      {
+        accessorKey: "stock", //alternate way
+        header: "stock",
+        Header: <i style={{ color: "blue" }}>Stock</i>, //optional custom markup
+      },
+      {
+        accessorKey: "ganancia", //alternate way
+        header: "ganancia",
+        Header: <i style={{ color: "blue" }}>ganancia</i>, //optional custom markup
+      },
+      
+      {
         accessorKey: "Estado", //alternate way
-        enableEditing: false,
         header: "Estado",
         Header: <i style={{ color: "blue" }}>Estado</i>, //optional custom markup
       },
@@ -75,11 +104,11 @@ export default function Compras() {
     []
   );
 
-  const columnsEncabezadosVentas = useMemo(
+  const columnsDetalles = useMemo(
     //configuracion de las columnas que vienen en la consulta
     () => [
       {
-        accessorKey: "idEncabezado", //simple recommended way to define a column
+        accessorKey: "idDetalleCompra", //simple recommended way to define a column
         header: "ID",
         enableEditing: false, //disable editing on this column
         enableSorting: false,
@@ -87,39 +116,29 @@ export default function Compras() {
         Cell: ({ renderedCellValue }) => <strong>{renderedCellValue}</strong>, //optional custom cell render
       },
       {
-        accessorKey: "Tipo_Compra", //alternate way
-        header: "Tipo de Compra",
-        Header: <i style={{ color: "blue" }}>Tipo de Compra id</i>, //optional custom markup
+        accessorKey: "Cantidad", //alternate way
+        header: "Cantidad",
+        Header: <i style={{ color: "blue" }}>Cantidad Comprada</i>, //optional custom markup
       },
       {
-        accessorKey: "tipo", //alternate way
-        header: "tipo",
-        Header: <i style={{ color: "blue" }}>Tipo Compra</i>, //optional custom markup
+        accessorKey: "codigo", //alternate way
+        header: "codigo",
+        Header: <i style={{ color: "blue" }}>CodigoProducto</i>, //optional custom markup
       },
       {
-        accessorKey: "ProveedorId", //alternate way
-        header: "ProveedorId",
-        Header: <i style={{ color: "blue" }}>Proveedorid</i>, //optional custom markup
+        accessorKey: "descripcion", //alternate way
+        header: "descripcion",
+        Header: <i style={{ color: "blue" }}>Producto</i>, //optional custom markup
       },
       {
-        accessorKey: "nombreProve", //alternate way
-        header: "nombreProve",
-        Header: <i style={{ color: "blue" }}>Proveedor</i>, //optional custom markup
+        accessorKey: "precio_costo", //alternate way
+        header: "precio_costo",
+        Header: <i style={{ color: "blue" }}>precio Costo</i>, //optional custom markup
       },
       {
-        accessorKey: "Fecha_compra", //alternate way
-        header: "Fecha_compra",
-        Header: <i style={{ color: "blue" }}>Fecha Compra</i>, //optional custom markup
-      },
-      {
-        accessorKey: "Usuario", //alternate way
-        header: "Usuario",
-        Header: <i style={{ color: "blue" }}>Usuario</i>, //optional custom markup
-      },
-      {
-        accessorKey: "totalCompra", //alternate way
-        header: "TotalCompra",
-        Header: <i style={{ color: "blue" }}>Total compra</i>, //optional custom markup
+        accessorKey: "Subtotal", //alternate way
+        header: "Subtotal",
+        Header: <i style={{ color: "blue" }}>Subtotal</i>, //optional custom markup
       },
     ],
     []
@@ -127,7 +146,7 @@ export default function Compras() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}encabezadosCompra/createFacturaEncabezado`,
+        `${process.env.NEXT_PUBLIC_API_URL}detallesCompras/createDetalle`,
         data
       );
       toast(res.data?.message);
@@ -144,12 +163,12 @@ export default function Compras() {
         show={props.openModal === "default"}
         onClose={() => props.setOpenModal(undefined)}
       >
-        <Modal.Header>Agregar Proveedor</Modal.Header>
+        <Modal.Header>Agregar Producto</Modal.Header>
         <Modal.Body>
           <MaterialReactTable
-            columns={columnsProveedores}
+            columns={columnsProductos}
             enableRowActions
-            data={data?.proveedores ? data.proveedores : []}
+            data={data?.productos ? data.productos : []}
             enableDensityToggle={false}
             initialState={{ density: "compact" }}
             muiTableProps={{
@@ -160,14 +179,18 @@ export default function Compras() {
             renderRowActions={({ row, table }) => (
               <div className="flex">
                 <Button
-                  color="failure"
+                  color="success"
                   pill
                   onClick={() => {
-                    setValue("ProveedorId", row.getValue("idProveedor"));
+                    setValue("idProducto", row.getValue("codigo"));
+                    setValue("precio_costo", row.getValue("precio_costo"))
+                    setValue("precio_venta", row.getValue("precio_venta"))
+                    setValue("ganancia", row.getValue("ganancia"))
+                    setValue("precio_mayoreo", row.getValue("precio_mayoreo"))
                     props.setOpenModal(undefined);
                   }}
                 >
-                  seleccionar
+                  <CheckCircleOutlineIcon />
                 </Button>
               </div>
             )}
@@ -276,66 +299,36 @@ export default function Compras() {
       <div className="flex flex-col pt-5">
         <Card className="max-w-sm mb-4 md:max-w-2xl">
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            COMPRAS ENCABEZADOS
+            DETALLES DE LA COMPRA
           </h5>
           <form className="grid grid-cols-2 gap-4" onSubmit={onSubmit}>
             <div>
               <div className="mb-2">
-                <Label
-                  htmlFor="Tipo_Compra"
-                  value="Selecciona un tipo de Compra"
-                />
-              </div>
-              <Select
-                id="Tipo_Compra"
-                name="Tipo_Compra"
-                {...register("Tipo_Compra", {
-                  required: {
-                    value: true,
-                    message: "El tipo de compra es requerido",
-                  },
-                })}
-              >
-                {data?.tipocompras ? (
-                  data?.tipocompras.map((tipocompra, index) => (
-                    <option key={index} value={tipocompra.idTipoCompra}>
-                      {tipocompra.tipo}
-                    </option>
-                  ))
-                ) : (
-                  <option>NO HAY REGISTROS</option>
-                )}
-              </Select>
-              {errors.Tipo_Compra && (
-                <span className="text-red-600">
-                  {errors.Tipo_Compra.message}
-                </span>
-              )}
-            </div>
-            <div>
-              <div className="mb-2">
-                <Label htmlFor="Fecha_compra" value="fecha de la compra" />
+                <Label htmlFor="EncabezadoID" value="Encabezado ID" />
               </div>
               <TextInput
-                id="Fecha_compra"
-                name="Fecha_compra"
-                type="date"
-                {...register("Fecha_compra", {
+                id="idEncabezado"
+                name="idEncabezado"
+                disabled
+                {...register("idEncabezado", {
                   required: {
                     value: true,
-                    message: "Fecha_compra requerido",
+                    message: "El id del encabezado es requerido",
                   },
                 })}
               />
-              {errors.Fecha_compra && (
+              {errors.idEncabezado && (
                 <span className="text-red-600">
-                  {errors.Fecha_compra.message}
+                  {errors.idEncabezado.message}
                 </span>
               )}
             </div>
             <div>
               <div className="mb-2">
-                <Label htmlFor="Proveedor" value="Selecciona un proveedor" />
+                <Label
+                  htmlFor="idProducto"
+                  value="Selecciona el producto comprado"
+                />
                 <Button onClick={() => props.setOpenModal("default")}>
                   SELECCIONAR
                 </Button>
@@ -343,35 +336,190 @@ export default function Compras() {
             </div>
             <div>
               <div className="mb-2">
-                <Label htmlFor="ProveedorId" value="ID PROVEEDOR ELEGIDO" />
+                <Label htmlFor="idProducto" value="ID PRODUCTO ELEGIDO" />
                 <TextInput
-                  id="ProveedorId"
-                  name="ProveedorId"
+                  id="idProducto"
+                  name="idProducto"
                   disabled
                   type="text"
-                  {...register("ProveedorId", {
+                  {...register("idProducto", {
                     required: {
                       value: true,
-                      message: "Proveedor requerido",
+                      message: "Producto requerido",
+                    },
+                    pattern: {
+                      value: /^[0-9]*$/,
+                      message: "Codigo de producto no válido",
                     },
                   })}
                 />
-                {errors.ProveedorId && (
+                {errors.idProducto && (
                   <span className="text-red-600">
-                    {errors.ProveedorId.message}
+                    {errors.idProducto.message}
                   </span>
                 )}
               </div>
             </div>
-            <Button type="submit">Crear</Button>
+            <div>
+              <div className="mb-2">
+                <Label htmlFor="Cantidad" value="Cantidad comprada" />
+                <TextInput
+                  id="Cantidad"
+                  name="Cantidad"
+                  type="number"
+                  min={0}
+                  {...register("Cantidad", {
+                    required: {
+                      value: true,
+                      message: "precio costo requerido",
+                    },
+                    pattern: {
+                      value: /^[0-9]*$/,
+                      message: "solo numeros",
+                    },
+                  })}
+                />
+                {errors.Cantidad && (
+                  <span className="text-red-600">
+                    {errors.Cantidad.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="mb-2">
+                <Label htmlFor="precio_costo" value="Precio Costo" />
+                <TextInput
+                  id="precio_costo"
+                  name="precio_costo"
+                  type="text"
+                  {...register("precio_costo", {
+                    required: {
+                      value: true,
+                      message: "precio costo requerido",
+                    },
+                    pattern: {
+                      value: /^[0-9.]*$/,
+                      message: "solo numeros",
+                    },
+                  })}
+                />
+                {errors.precio_costo && (
+                  <span className="text-red-600">
+                    {errors.precio_costo.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="mb-2">
+                <Label
+                  htmlFor="ganancia"
+                  value="Ingresa porcentaje de ganancia"
+                />
+                <TextInput
+                  id="ganancia"
+                  name="ganancia"
+                  type="text"
+                  {...register("ganancia", {
+                    required: {
+                      value: true,
+                      message: "porcentaje de ganancia requerido",
+                    },
+                    pattern: {
+                      value: /^[0-9.]*$/,
+                      message: "solo numeros",
+                    },
+                  })}
+                />
+                {errors.ganancia && (
+                  <span className="text-red-600">
+                    {errors.ganancia.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <Button color="light" pill
+               onClick={() =>{
+                   let ganancia = parseInt(getValues("ganancia"))/100 ;
+                   let precioCosto = parseFloat( getValues("precio_costo"));
+                   let precioAsumar = precioCosto * ganancia; 
+                   let precioVenta = precioCosto  + precioAsumar; 
+                   setValue("precio_venta", precioVenta); 
+               }
+               }
+              >
+                <p>Calcular PrecioVenta</p>
+              </Button>
+            </div>
+            <div>
+              <div className="mb-2">
+                <Label htmlFor="precio_venta" value="PRECIO VENTA CALCULADO" />
+                <TextInput
+                  id="precio_venta"
+                  name="precio_venta"
+                  disabled
+                  type="text"
+                  {...register("precio_venta", {
+                    required: {
+                      value: true,
+                      message: "Producto requerido",
+                    },
+                    pattern: {
+                      value: /^[1-9.]*$/,
+                      message: "Codigo de producto no válido",
+                    },
+                  })}
+                />
+                {errors.precio_venta && (
+                  <span className="text-red-600">
+                    {errors.precio_venta.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="mb-2">
+                <Label htmlFor="precio_mayoreo" value="ingresa el precio por mayoreo" />
+                <TextInput
+                  id="precio_mayoreo"
+                  name="precio_mayoreo"
+                  type="text"
+                  {...register("precio_mayoreo", {
+                    required: {
+                      value: true,
+                      message: "Precio mayoreo requerido",
+                    },
+                    pattern: {
+                      value: /^[0-9.]*$/,
+                      message: "Codigo de Precio mayoreo no válido",
+                    },
+                  })}
+                />
+                {errors.precio_mayoreo && (
+                  <span className="text-red-600">
+                    {errors.precio_mayoreo.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <Button type="submit" disabled={!isValid}>Crear</Button>
+            <Button color="success"
+              onClick={()=>{
+                 router.back(); 
+              }}
+            >
+            Regresar
+            </Button>
           </form>
         </Card>
-        <h3>Facturas Encabezado Compras</h3>
+        <h3>Detalle Compras</h3>
         <Card className="max-w-sm mb-4 md:max-w-2xl">
           <MaterialReactTable
-            columns={columnsEncabezadosVentas}
+            columns={columnsDetalles}
             enableRowActions
-            data={data?.encabezados ? data.encabezados : []}
+            data={data?.detalles ? data.detalles : []}
             enableDensityToggle={false}
             initialState={{
               density: "compact",
@@ -384,47 +532,28 @@ export default function Compras() {
             }}
             renderRowActions={({ row, table }) => (
               <div className="flex">
-                <Tooltip content="Administrar Detalles">
-                  <Button
-                    color="success"
-                    pill
-                    onClick={() => {
-                      router.push(
-                        `/moduloCompras/detallesCompra/${row.getValue(
-                          "idEncabezado"
-                        )}`
-                      );
-                    }}
-                  >
-                    <SettingsApplicationsIcon />
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Eliminar encabezado">
+                <Tooltip content="Quitar el detalle">
                   <Button
                     color="failure"
                     pill
-                    onClick={async () => {
+                    onClick={async() => {
                       if (
                         !confirm(
-                          `Deseas eliminar el encabezado co id : ${row.getValue(
-                            "idEncabezado"
+                          `Deseas eliminar el detalle con id : ${row.getValue(
+                            "idDetalleCompra"
                           )}`
                         )
                       ) {
                         return;
                       }
-                      const res = await axios.delete(
-                        `${
-                          process.env.NEXT_PUBLIC_API_URL
-                        }encabezadosCompra/deleteencabezado?idEncabezado=${row.getValue(
-                          "idEncabezado"
-                        )}&idEmpresa=${idEmpresa}`
+                      const res = await axios.post(
+                        `${process.env.NEXT_PUBLIC_API_URL}detallesCompras/deletedetallecompra?idDetalle=${row.getValue("idDetalleCompra")}&idEmpresa=${idEmpresa}`
                       );
                       toast(res.data?.message,{style:{background:'red'}});
                       mutate();
                     }}
                   >
-                    <Delete />
+                    <Delete/>
                   </Button>
                 </Tooltip>
               </div>
@@ -528,4 +657,6 @@ export default function Compras() {
       </div>
     </>
   );
-}
+};
+
+export default DetallesCompras;
