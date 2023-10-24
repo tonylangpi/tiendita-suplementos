@@ -48,6 +48,21 @@ const Slidebar = () => {
                       sabores
                     </Sidebar.Item>
                   </Sidebar.Collapse>
+                  
+                  <Sidebar.Collapse icon={HiShoppingBag} label="Ventas">
+                    <Sidebar.Item as={Link} href="/moduloVentas">
+                       Ventas
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloVentas/tipoventas">
+                      tipo Ventas
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloVentas/metodosPago">
+                      Metodos de pago
+                    </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloVentas/clientes">
+                      Clientes
+                    </Sidebar.Item>
+                  </Sidebar.Collapse>
                   <Sidebar.Collapse icon={HiShoppingBag} label="Compras">
                     <Sidebar.Item as={Link} href="/moduloCompras">
                       Compras

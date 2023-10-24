@@ -1,8 +1,6 @@
 "use client";
-import TablaProveedores from '../../../components/Compras/TablaProveedores';
 import React, { useMemo } from "react";
 import { Toaster, toast } from "sonner";
-import { useSession } from "next-auth/react";
 import { MaterialReactTable } from "material-react-table";
 import EditIcon from "@mui/icons-material/Edit";
 import PowerSettingsNewTwoToneIcon from '@mui/icons-material/PowerSettingsNewTwoTone';
@@ -12,12 +10,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
-function ProveedoresPage(){
+function MetodosDePago(){
   const [openModal, setOpenModal] = useState();
   const router = useRouter();
-  /*LLAMADO A LA API PARA LA PETICION DE PROVEEDORES */
+  /*LLAMADO A LA API PARA LA PETICION DE METODOS DE PAGO */
   const { data, mutate} = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}proveedores/all`,{
+    `${process.env.NEXT_PUBLIC_API_URL}metodopago/all`,{
       revalidateIfStale: true,
       revalidateOnFocus: false,
       revalidateOnReconnect: false
@@ -25,8 +23,6 @@ function ProveedoresPage(){
   );
   /***************************************************** */
   const props = { openModal, setOpenModal };
-  const { data: session } = useSession();
-  let idUsuario = session?.user?.idUsuario;
   const {
     register,
     handleSubmit,
@@ -35,16 +31,13 @@ function ProveedoresPage(){
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      nombreProve: "",
-      telefono: "",
-      direccion: "",
-      idUsuario: idUsuario,
+        metodoNombre: ""
     },
   });
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
     //funciona que captura datos y actualiza los datos a la BD mediante la api
     let res = await axios.put(
-      `${process.env.NEXT_PUBLIC_API_URL}proveedores/updateProveedor`,
+      `${process.env.NEXT_PUBLIC_API_URL}metodopago/updatemetodoPago`,
       values
     );
     toast(res.data?.message, { style: { background: "yellow" } });
@@ -56,7 +49,7 @@ function ProveedoresPage(){
     //configuracion de las columnas que vienen en la consulta
     () => [
       {
-        accessorKey: "idProveedor", //simple recommended way to define a column
+        accessorKey: "idMetodoPago", //simple recommended way to define a column
         header: "ID",
         enableEditing: false, //disable editing on this column
         enableSorting: false,
@@ -64,39 +57,15 @@ function ProveedoresPage(){
         Cell: ({ renderedCellValue }) => <strong>{renderedCellValue}</strong>, //optional custom cell render
       },
       {
-        accessorKey: "nombreProve", //alternate way
-        header: "Proveedor",
-        Header: <i style={{ color: "blue" }}>Proveedor</i>, //optional custom markup
-      },
-      {
-        accessorKey: "telefono", //alternate way
-        header: "Telefono",
-        Header: <i style={{ color: "blue" }}>Telefono</i>, //optional custom markup
-      },
-      {
-        accessorKey: "direccion", //alternate way
-        header: "direccion",
-        Header: <i style={{ color: "blue" }}>Direccion</i>, //optional custom markup
+        accessorKey: "metodoNombre", //alternate way
+        header: "metodoNombre",
+        Header: <i style={{ color: "blue" }}>Metodo de Pago</i>, //optional custom markup
       },
       {
         accessorKey: "Estado", //alternate way
         enableEditing: false,
         header: "Estado",
         Header: <i style={{ color: "blue" }}>Estado</i>, //optional custom markup
-      },
-      {
-        accessorKey: "fecha_creacion", //alternate way
-        header: "fecha_creacion",
-        enableEditing: false, //disable editing on this column
-        enableSorting: false,
-        Header: <i style={{ color: "blue" }}>Fecha de creacion</i>, //optional custom markup
-      },
-      {
-        accessorKey: "idUsuario", //alternate way
-        header: "idUsuario",
-        enableEditing: false, //disable editing on this column
-        enableSorting: false,
-        Header: <i style={{ color: "blue" }}>Id usuario</i>, //optional custom markup
       }
     ],
     []
@@ -105,7 +74,7 @@ function ProveedoresPage(){
   const save = handleSubmit(async (data) => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}proveedores/create`,
+        `${process.env.NEXT_PUBLIC_API_URL}metodopago/create`,
         data
       );
       toast(res.data?.message);
@@ -124,106 +93,37 @@ function ProveedoresPage(){
         show={props.openModal === "default"}
         onClose={() => props.setOpenModal(undefined)}
       >
-        <Modal.Header>Agregar Proveedor</Modal.Header>
+        <Modal.Header>Agregar Metodo de Pago nuevo</Modal.Header>
         <Modal.Body>
           <form className="flex flex-col gap-4" onSubmit={save}>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="nombreProveedor" value="nombre Proveedor" />
+                <Label htmlFor="metodoNombre" value="tipo de Venta" />
               </div>
               <TextInput
-                id="nombreProveedor"
-                required
+                id="metodoNombre"
                 type="text"
-                name="nombreProveedor"
-                {...register("nombreProve", {
+                name="metodoNombre"
+                {...register("metodoNombre", {
                   required: {
                     value: true,
-                    message: "nombre de Proveedor  requerido",
+                    message: "nombre de metodo de pago requerido",
                   },
-                  maxLength: 150,
+                  maxLength: 50,
                   minLength: 2,
                 })}
               />
-              {errors.nombreProve && (
-                <span className="text-red-600">{errors.nombreProve.message}</span>
+              {errors.metodoNombre && (
+                <span className="text-red-600">{errors.metodoNombre.message}</span>
               )}
-              {errors.nombreProve?.type === "maxLength" && (
+              {errors.metodoNombre?.type === "maxLength" && (
                 <span className="text-red-600">
-                  El nombre del proveedor no debe superar los 150 caracteres
+                  El nombre del metodo de pago no debe superar los 50 caracteres
                 </span>
               )}
-              {errors.nombreProve?.type === "minLength" && (
+              {errors.metodoNombre?.type === "minLength" && (
                 <span className="text-red-600">
-                  el nombre del proveedor debe ser mayor a 2 caracteres
-                </span>
-              )}
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="telefono" value="Telefono" />
-              </div>
-              <TextInput
-                id="telefono"
-                required
-                type="text"
-                name="telefono"
-                {...register("telefono", {
-                  required: {
-                    value: true,
-                    message: "El telefono  requerido",
-                  },
-                  maxLength: 8,
-                  minLength: 8,
-                  pattern: {
-                      value: /^[0-9]+$/,
-                      message: "Telefono no valido, solo numeros",
-                    },
-                })}
-              />
-              {errors.telefono && (
-                <span className="text-red-600">{errors.telefono.message}</span>
-              )}
-              {errors.telefono?.type === "maxLength" && (
-                <span className="text-red-600">
-                  El telefonon no de sobrepasar los 8 digitos
-                </span>
-              )}
-              {errors.telefono?.type === "minLength" && (
-                <span className="text-red-600">
-                  el telefono debe tener al menos 8 digitos
-                </span>
-              )}
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="Direccion" value="Direccion" />
-              </div>
-              <Textarea
-                id="direccion"
-                type="text"
-                name="direccion"
-                rows={4}
-                {...register("direccion", {
-                  required: {
-                    value: true,
-                    message: "La direccion es requerida",
-                  },
-                  maxLength: 150,
-                  minLength: 4,
-                })}
-              />
-              {errors.direccion && (
-                <span className="text-red-600">{errors.direccion.message}</span>
-              )}
-              {errors.direccion?.type === "maxLength" && (
-                <span className="text-red-600">
-                  La direccion no debe sobrepasar los 150 caracteres
-                </span>
-              )}
-              {errors.direccion?.type === "minLength" && (
-                <span className="text-red-600">
-                   La direccion debe tener al menos 4 caracteres
+                  el nombre del metodo de pago debe ser mayor a 2 caracteres
                 </span>
               )}
             </div>
@@ -236,14 +136,14 @@ function ProveedoresPage(){
           </Button>
         </Modal.Footer>
       </Modal>
-      <h1>Proveedores</h1>
+      <h1>Metodos de pago listados</h1>
       {
         data ? (<MaterialReactTable
         columns={columns}
         enableRowActions
         data={data ? data : []}
         enableDensityToggle={false}
-        initialState={{ columnVisibility: { fecha_creacion: false, idUsuario: false } }}
+        initialState={{ density: "compact" }}
         muiTableProps={{
         sx: {
           border: '1px solid rgba(81, 81, 81, 1)',
@@ -258,14 +158,14 @@ function ProveedoresPage(){
               pill
               onClick={async () => {
                 if (
-                  !confirm(`Deseas cambiar el estado del proveedor: ${row.getValue("nombreProve")}`)
+                  !confirm(`Deseas cambiar el estado del Metodo de pago: ${row.getValue("metodoNombre")}`)
                 ) {
                   return;
                 }
                 let res = await axios.delete(
                   `${
                     process.env.NEXT_PUBLIC_API_URL
-                  }proveedores/changeStatus/${row.getValue("idProveedor")}`
+                  }metodopago/deletemetodoPago/${row.getValue("idMetodoPago")}`
                 );
                   toast(`${res.data?.message}`, { style: { background: "red" } });
                   mutate();
@@ -384,10 +284,10 @@ function ProveedoresPage(){
           unpinAll: "Desanclar todo",
           unsorted: "Sin ordenar",
         }}
-      />) : (<h1>Recargando</h1>)
+      />) : (<h1>Cargando...</h1>)
       }
     </>
   );
 }
 
-export default ProveedoresPage
+export default MetodosDePago
