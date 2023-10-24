@@ -53,7 +53,6 @@ function ProductosPage() {
       precio_costo: 0,
       ganancia: 0,
       precio_venta: 0,
-      precio_mayoreo: 0,
       stock: 0,
       stock_minimo: 0,
       lote: "",
@@ -389,34 +388,6 @@ function ProductosPage() {
                         {errors.precio_venta && (
                           <span className="text-red-600">
                             {errors.precio_venta.message}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="mb-2">
-                        <Label
-                          htmlFor="precio_mayoreo"
-                          value="ingresa el precio por mayoreo"
-                        />
-                        <TextInput
-                          id="precio_mayoreo"
-                          name="precio_mayoreo"
-                          type="text"
-                          {...register("precio_mayoreo", {
-                            required: {
-                              value: true,
-                              message: "Precio mayoreo requerido",
-                            },
-                            pattern: {
-                              value: /^[0-9.]*$/,
-                              message: "Codigo de Precio mayoreo no válido",
-                            },
-                          })}
-                        />
-                        {errors.precio_mayoreo && (
-                          <span className="text-red-600">
-                            {errors.precio_mayoreo.message}
                           </span>
                         )}
                       </div>

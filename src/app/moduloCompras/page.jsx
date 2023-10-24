@@ -75,7 +75,7 @@ export default function Compras() {
     []
   );
 
-  const columnsEncabezadosVentas = useMemo(
+  const columnsEncabezadosCompras = useMemo(
     //configuracion de las columnas que vienen en la consulta
     () => [
       {
@@ -369,7 +369,7 @@ export default function Compras() {
         <h3>Facturas Encabezado Compras</h3>
         <Card className="max-w-sm mb-4 md:max-w-2xl">
           <MaterialReactTable
-            columns={columnsEncabezadosVentas}
+            columns={columnsEncabezadosCompras}
             enableRowActions
             data={data?.encabezados ? data.encabezados : []}
             enableDensityToggle={false}
@@ -406,7 +406,7 @@ export default function Compras() {
                     onClick={async () => {
                       if (
                         !confirm(
-                          `Deseas eliminar el encabezado co id : ${row.getValue(
+                          `Deseas eliminar el encabezado con id : ${row.getValue(
                             "idEncabezado"
                           )}`
                         )

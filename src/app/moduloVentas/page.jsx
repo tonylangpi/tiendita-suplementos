@@ -4,7 +4,8 @@ import { useState, useMemo } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Toaster, toast } from "sonner";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { MaterialReactTable } from "material-react-table";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
@@ -18,15 +19,15 @@ import {
   Tooltip,
 } from "flowbite-react";
 import Delete from "@mui/icons-material/Delete";
-
-const DetallesCompras = ({ params }) => {
+export default function Ventas() {
   const router = useRouter();
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
   const { data: session } = useSession();
-  let idEmpresa = session?.user?.idEmpresa; //obtenemos la empresa del que esta logueado en la app
+  let idEmpresa = session?.user?.idEmpresa;
+  let idUsuario = session?.user?.idUsuario;
   const { data, mutate } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}detallesCompras/all?idEmpresa=${idEmpresa}&idEncabezado=${params.idCompra}`,
+    `${process.env.NEXT_PUBLIC_API_URL}encabezadosVenta/all/${idEmpresa}`,
     {
       revalidateIfStale: true,
       revalidateOnFocus: false,
@@ -36,73 +37,27 @@ const DetallesCompras = ({ params }) => {
   const {
     register,
     handleSubmit,
-    getValues,
-    formState: { errors, isValid},
+    formState: { errors },
     reset,
     setValue,
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      idEncabezado: params.idCompra ? params.idCompra : 0,
-      idProducto: "",
-      Cantidad: 0,
-      precio_costo: 0,
-      ganancia: 0,
-      precio_venta: 0,
-      idEmpresa:idEmpresa
+      idCliente: "",
+      idMetodoPago: "",
+      nitCliente: "",
+      nombreCliente: "",
+      idEmpresa: idEmpresa,
+      idUsuario: idUsuario,
+      idtipoVenta: "",
+      Estado: "VIGENTE",
     },
   });
-  const columnsProductos = useMemo(
+  const columnsClientes = useMemo(
     //configuracion de las columnas que vienen en la consulta
     () => [
       {
-        accessorKey: "codigo", //simple recommended way to define a column
-        header: "CODIGO",
-        enableEditing: false, //disable editing on this column
-        enableSorting: false,
-        muiTableHeadCellProps: { sx: { color: "green" } }, //custom props
-        Cell: ({ renderedCellValue }) => <strong>{renderedCellValue}</strong>, //optional custom cell render
-      },
-      {
-        accessorKey: "descripcion", //alternate way
-        header: "Descripcion",
-        Header: <i style={{ color: "blue" }}>Descripcion</i>, //optional custom markup
-      },
-      {
-        accessorKey: "precio_costo", //alternate way
-        header: "precio_costo",
-        Header: <i style={{ color: "blue" }}>Precio Costo</i>, //optional custom markup
-      },
-      {
-        accessorKey: "precio_venta", //alternate way
-        header: "precio_venta",
-        Header: <i style={{ color: "blue" }}>Precio Venta</i>, //optional custom markup
-      },
-      {
-        accessorKey: "stock", //alternate way
-        header: "stock",
-        Header: <i style={{ color: "blue" }}>Stock</i>, //optional custom markup
-      },
-      {
-        accessorKey: "ganancia", //alternate way
-        header: "ganancia",
-        Header: <i style={{ color: "blue" }}>ganancia</i>, //optional custom markup
-      },
-      
-      {
-        accessorKey: "Estado", //alternate way
-        header: "Estado",
-        Header: <i style={{ color: "blue" }}>Estado</i>, //optional custom markup
-      },
-    ],
-    []
-  );
-
-  const columnsDetalles = useMemo(
-    //configuracion de las columnas que vienen en la consulta
-    () => [
-      {
-        accessorKey: "idDetalleCompra", //simple recommended way to define a column
+        accessorKey: "idCliente", //simple recommended way to define a column
         header: "ID",
         enableEditing: false, //disable editing on this column
         enableSorting: false,
@@ -110,29 +65,80 @@ const DetallesCompras = ({ params }) => {
         Cell: ({ renderedCellValue }) => <strong>{renderedCellValue}</strong>, //optional custom cell render
       },
       {
-        accessorKey: "Cantidad", //alternate way
-        header: "Cantidad",
-        Header: <i style={{ color: "blue" }}>Cantidad Comprada</i>, //optional custom markup
+        accessorKey: "nitCliente", //alternate way
+        header: "cliente nit",
+        Header: <i style={{ color: "blue" }}>cliente nit</i>, //optional custom markup
       },
       {
-        accessorKey: "codigo", //alternate way
-        header: "codigo",
-        Header: <i style={{ color: "blue" }}>CodigoProducto</i>, //optional custom markup
+        accessorKey: "nombre", //alternate way
+        header: "nombre cliente",
+        Header: <i style={{ color: "blue" }}>cliente nombre</i>, //optional custom markup
       },
       {
-        accessorKey: "descripcion", //alternate way
-        header: "descripcion",
-        Header: <i style={{ color: "blue" }}>Producto</i>, //optional custom markup
+        accessorKey: "Estado", //alternate way
+        enableEditing: false,
+        header: "Estado",
+        Header: <i style={{ color: "blue" }}>Estado</i>, //optional custom markup
+      },
+    ],
+    []
+  );
+
+  const columnsEncabezadosVentas = useMemo(
+    //configuracion de las columnas que vienen en la consulta
+    () => [
+      {
+        accessorKey: "idEncabezadoVenta", //simple recommended way to define a column
+        header: "ID",
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
+        muiTableHeadCellProps: { sx: { color: "green" } }, //custom props
+        Cell: ({ renderedCellValue }) => <strong>{renderedCellValue}</strong>, //optional custom cell render
       },
       {
-        accessorKey: "precio_costo", //alternate way
-        header: "precio_costo",
-        Header: <i style={{ color: "blue" }}>precio Costo</i>, //optional custom markup
+        accessorKey: "idtipoVenta", //alternate way
+        header: "ID TIPO VENTA",
+        Header: <i style={{ color: "blue" }}>ID TIPO VENTA</i>, //optional custom markup
       },
       {
-        accessorKey: "Subtotal", //alternate way
-        header: "Subtotal",
-        Header: <i style={{ color: "blue" }}>Subtotal</i>, //optional custom markup
+        accessorKey: "Estado", //alternate way
+        header: "Estado Factura",
+        Header: <i style={{ color: "blue" }}>Estado de la factura</i>, //optional custom markup
+      },
+      {
+        accessorKey: "nombreTipoVenta", //alternate way
+        header: "nombreTipoVenta",
+        Header: <i style={{ color: "blue" }}>nombre TipoVenta</i>, //optional custom markup
+      },
+      {
+        accessorKey: "idCliente", //alternate way
+        header: "idCliente",
+        Header: <i style={{ color: "blue" }}>idCliente</i>, //optional custom markup
+      },
+      {
+        accessorKey: "nombre", //alternate way
+        header: "nombre",
+        Header: <i style={{ color: "blue" }}>Cliente</i>, //optional custom markup
+      },
+      {
+        accessorKey: "nitCliente", //alternate way
+        header: "nitCliente",
+        Header: <i style={{ color: "blue" }}>Nit cliente</i>, //optional custom markup
+      },
+      {
+        accessorKey: "Fecha_venta", //alternate way
+        header: "Fecha_venta",
+        Header: <i style={{ color: "blue" }}>Fecha venta</i>, //optional custom markup
+      },
+      {
+        accessorKey: "Usuario", //alternate way
+        header: "Usuario",
+        Header: <i style={{ color: "blue" }}>Usuario</i>, //optional custom markup
+      },
+      {
+        accessorKey: "totalVenta", //alternate way
+        header: "totalVenta",
+        Header: <i style={{ color: "blue" }}>Total venta</i>, //optional custom markup
       },
     ],
     []
@@ -140,7 +146,7 @@ const DetallesCompras = ({ params }) => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}detallesCompras/createDetalle`,
+        `${process.env.NEXT_PUBLIC_API_URL}encabezadosVenta/createFacturaEncabezado`,
         data
       );
       toast(res.data?.message);
@@ -157,12 +163,12 @@ const DetallesCompras = ({ params }) => {
         show={props.openModal === "default"}
         onClose={() => props.setOpenModal(undefined)}
       >
-        <Modal.Header>Agregar Producto</Modal.Header>
+        <Modal.Header>Agregar Cliente</Modal.Header>
         <Modal.Body>
           <MaterialReactTable
-            columns={columnsProductos}
+            columns={columnsClientes}
             enableRowActions
-            data={data?.productos ? data.productos : []}
+            data={data?.clientesActivos ? data.clientesActivos : []}
             enableDensityToggle={false}
             initialState={{ density: "compact" }}
             muiTableProps={{
@@ -173,17 +179,16 @@ const DetallesCompras = ({ params }) => {
             renderRowActions={({ row, table }) => (
               <div className="flex">
                 <Button
-                  color="success"
+                  color="failure"
                   pill
                   onClick={() => {
-                    setValue("idProducto", row.getValue("codigo"));
-                    setValue("precio_costo", row.getValue("precio_costo"))
-                    setValue("precio_venta", row.getValue("precio_venta"))
-                    setValue("ganancia", row.getValue("ganancia"))
+                    setValue("idCliente", row.getValue("idCliente"));
+                    setValue("nitCliente", row.getValue("nitCliente"));
+                    setValue("nombreCliente", row.getValue("nombre"));
                     props.setOpenModal(undefined);
                   }}
                 >
-                  <CheckCircleOutlineIcon />
+                  seleccionar
                 </Button>
               </div>
             )}
@@ -292,36 +297,45 @@ const DetallesCompras = ({ params }) => {
       <div className="flex flex-col pt-5">
         <Card className="max-w-sm mb-4 md:max-w-2xl">
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            DETALLES DE LA COMPRA
+            VENTAS ENCABEZADOS
           </h5>
           <form className="grid grid-cols-2 gap-4" onSubmit={onSubmit}>
             <div>
               <div className="mb-2">
-                <Label htmlFor="EncabezadoID" value="Encabezado ID" />
+                <Label
+                  htmlFor="idMetodoPago"
+                  value="Selecciona un Metodo de pago"
+                />
               </div>
-              <TextInput
-                id="idEncabezado"
-                name="idEncabezado"
-                disabled
-                {...register("idEncabezado", {
+              <Select
+                id="idMetodoPago"
+                name="idMetodoPago"
+                {...register("idMetodoPago", {
                   required: {
                     value: true,
-                    message: "El id del encabezado es requerido",
+                    message: "El metodo de pago es requerido",
                   },
                 })}
-              />
-              {errors.idEncabezado && (
+              >
+                {data?.metodospago ? (
+                  data?.metodospago.map((metodospago, index) => (
+                    <option key={index} value={metodospago.idMetodoPago}>
+                      {metodospago.metodoNombre}
+                    </option>
+                  ))
+                ) : (
+                  <option>NO HAY REGISTROS</option>
+                )}
+              </Select>
+              {errors.idMetodoPago && (
                 <span className="text-red-600">
-                  {errors.idEncabezado.message}
+                  {errors.idMetodoPago.message}
                 </span>
               )}
             </div>
             <div>
               <div className="mb-2">
-                <Label
-                  htmlFor="idProducto"
-                  value="Selecciona el producto comprado"
-                />
+                <Label htmlFor="cliente" value="Selecciona un cliente" />
                 <Button onClick={() => props.setOpenModal("default")}>
                   SELECCIONAR
                 </Button>
@@ -329,169 +343,95 @@ const DetallesCompras = ({ params }) => {
             </div>
             <div>
               <div className="mb-2">
-                <Label htmlFor="idProducto" value="ID PRODUCTO ELEGIDO" />
+                <Label htmlFor="ClienteId" value="ID CLIENTE ELEGIDO" />
                 <TextInput
-                  id="idProducto"
-                  name="idProducto"
+                  id="ClienteId"
+                  name="ClienteId"
                   disabled
                   type="text"
-                  {...register("idProducto", {
+                  {...register("idCliente", {
                     required: {
                       value: true,
-                      message: "Producto requerido",
-                    },
-                    pattern: {
-                      value: /^[0-9]*$/,
-                      message: "Codigo de producto no válido",
+                      message: "CLIENTE requerido",
                     },
                   })}
                 />
-                {errors.idProducto && (
+                {errors.idCliente && (
                   <span className="text-red-600">
-                    {errors.idProducto.message}
+                    {errors.idCliente.message}
                   </span>
                 )}
               </div>
             </div>
             <div>
               <div className="mb-2">
-                <Label htmlFor="Cantidad" value="Cantidad comprada" />
+                <Label htmlFor="nitCliente" value="NIT CLIENTE ELEGIDO" />
                 <TextInput
-                  id="Cantidad"
-                  name="Cantidad"
-                  type="number"
-                  min={0}
-                  {...register("Cantidad", {
-                    required: {
-                      value: true,
-                      message: "precio costo requerido",
-                    },
-                    pattern: {
-                      value: /^[0-9]*$/,
-                      message: "solo numeros",
-                    },
-                  })}
-                />
-                {errors.Cantidad && (
-                  <span className="text-red-600">
-                    {errors.Cantidad.message}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div>
-              <div className="mb-2">
-                <Label htmlFor="precio_costo" value="Precio Costo" />
-                <TextInput
-                  id="precio_costo"
-                  name="precio_costo"
+                  id="nitCliente"
+                  name="nitCliente"
+                  disabled
                   type="text"
-                  {...register("precio_costo", {
-                    required: {
-                      value: true,
-                      message: "precio costo requerido",
-                    },
-                    pattern: {
-                      value: /^[0-9.]*$/,
-                      message: "solo numeros",
-                    },
-                  })}
+                  {...register("nitCliente")}
                 />
-                {errors.precio_costo && (
-                  <span className="text-red-600">
-                    {errors.precio_costo.message}
-                  </span>
-                )}
+              </div>
+            </div>
+            <div>
+              <div className="mb-2">
+                <Label htmlFor="nombreCliente" value="NOMBRE CLIENTE ELEGIDO" />
+                <TextInput
+                  id="nombreCliente"
+                  name="nombreCliente"
+                  disabled
+                  type="text"
+                  {...register("nombreCliente")}
+                />
               </div>
             </div>
             <div>
               <div className="mb-2">
                 <Label
-                  htmlFor="ganancia"
-                  value="Ingresa porcentaje de ganancia"
+                  htmlFor="idtipoVenta"
+                  value="Selecciona un Tipo de venta"
                 />
-                <TextInput
-                  id="ganancia"
-                  name="ganancia"
-                  type="text"
-                  {...register("ganancia", {
-                    required: {
-                      value: true,
-                      message: "porcentaje de ganancia requerido",
-                    },
-                    pattern: {
-                      value: /^[0-9.]*$/,
-                      message: "solo numeros",
-                    },
-                  })}
-                />
-                {errors.ganancia && (
-                  <span className="text-red-600">
-                    {errors.ganancia.message}
-                  </span>
-                )}
               </div>
-            </div>
-            <div>
-              <Button color="light" pill
-               onClick={() =>{
-                   let ganancia = parseInt(getValues("ganancia"))/100 ;
-                   let precioCosto = parseFloat( getValues("precio_costo"));
-                   let precioAsumar = precioCosto * ganancia; 
-                   let precioVenta = precioCosto  + precioAsumar; 
-                   setValue("precio_venta", precioVenta); 
-               }
-               }
+              <Select
+                id="idtipoVenta"
+                name="idtipoVenta"
+                {...register("idtipoVenta", {
+                  required: {
+                    value: true,
+                    message: "El tipo de venta es requerido",
+                  },
+                })}
               >
-                <p>Calcular PrecioVenta</p>
-              </Button>
-            </div>
-            <div>
-              <div className="mb-2">
-                <Label htmlFor="precio_venta" value="PRECIO VENTA CALCULADO" />
-                <TextInput
-                  id="precio_venta"
-                  name="precio_venta"
-                  disabled
-                  type="text"
-                  {...register("precio_venta", {
-                    required: {
-                      value: true,
-                      message: "Producto requerido",
-                    },
-                    pattern: {
-                      value: /^[1-9.]*$/,
-                      message: "Codigo de producto no válido",
-                    },
-                  })}
-                />
-                {errors.precio_venta && (
-                  <span className="text-red-600">
-                    {errors.precio_venta.message}
-                  </span>
+                {data?.tipoventa ? (
+                  data?.tipoventa.map((metodospago, index) => (
+                    <option key={index} value={metodospago.idTipoVenta}>
+                      {metodospago.nombreTipoVenta}
+                    </option>
+                  ))
+                ) : (
+                  <option>NO HAY REGISTROS</option>
                 )}
-              </div>
+              </Select>
+              {errors.idMetodoPago && (
+                <span className="text-red-600">
+                  {errors.idMetodoPago.message}
+                </span>
+              )}
             </div>
-            <Button type="submit" disabled={!isValid}>Crear</Button>
-            <Button color="success"
-              onClick={()=>{
-                 router.back(); 
-              }}
-            >
-            Regresar
-            </Button>
+            <Button type="submit">Crear</Button>
           </form>
         </Card>
-        <h3>Detalle Compras</h3>
+        <h3>Facturas Encabezado ventas</h3>
         <Card className="max-w-sm mb-4 md:max-w-2xl">
           <MaterialReactTable
-            columns={columnsDetalles}
+            columns={columnsEncabezadosVentas}
             enableRowActions
-            data={data?.detalles ? data.detalles : []}
+            data={data?.encabezados ? data.encabezados : []}
             enableDensityToggle={false}
             initialState={{
               density: "compact",
-              columnVisibility: { Tipo_Compra: false, ProveedorId: false },
             }}
             muiTableProps={{
               sx: {
@@ -500,30 +440,76 @@ const DetallesCompras = ({ params }) => {
             }}
             renderRowActions={({ row, table }) => (
               <div className="flex">
-                <Tooltip content="Quitar el detalle">
-                  <Button
-                    color="failure"
-                    pill
-                    onClick={async() => {
-                      if (
-                        !confirm(
-                          `Deseas eliminar el detalle con id : ${row.getValue(
-                            "idDetalleCompra"
-                          )}`
-                        )
-                      ) {
-                        return;
+                {row.getValue("Estado") == "ANULADA" ? null : (
+                  <>
+                    <Tooltip content="Administrar Detalles">
+                      <Button
+                        color="success"
+                        pill
+                        onClick={() => {
+                          router.push(
+                            `/moduloVentas/detallesVentas/${row.getValue(
+                              "idEncabezadoVenta"
+                            )}`
+                          );
+                        }}
+                      >
+                        <SettingsApplicationsIcon />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Anular encabezado factura">
+                      <Button
+                        color="failure"
+                        pill
+                        onClick={async () => {
+                          if (
+                            !confirm(
+                              `Deseas anular el encabezado venta id : ${row.getValue(
+                                "idEncabezadoVenta"
+                              )}`
+                            )
+                          ) {
+                            return;
+                          }
+                          const res = await axios.delete(
+                            `${
+                              process.env.NEXT_PUBLIC_API_URL
+                            }encabezadosVenta/deleteencabezado?idEncabezadoVenta=${row.getValue(
+                              "idEncabezadoVenta"
+                            )}&idEmpresa=${idEmpresa}&Estado=${row.getValue(
+                              "Estado"
+                            )}`
+                          );
+                          toast(res.data?.message, {
+                            style: { background: "red" },
+                          });
+                          mutate();
+                        }}
+                      >
+                        <Delete />
+                      </Button>
+                    </Tooltip>
+                      {
+                        row.getValue("totalVenta") == 0 ?(null):(<Tooltip content="GENERAR PDF FACTURA">
+                      <Button
+                        color="warning"
+                        pill
+                        onClick={async () => {
+                          window.open(
+                            `${
+                              process.env.NEXT_PUBLIC_API_URL
+                            }encabezadosVenta/generarFactura?idEncabezado=${row.getValue(
+                              "idEncabezadoVenta"
+                            )}&idEmpresa=${idEmpresa}`
+                          );
+                        }}
+                      >
+                        <FileDownloadIcon />
+                      </Button>
+                    </Tooltip>)
                       }
-                      const res = await axios.post(
-                        `${process.env.NEXT_PUBLIC_API_URL}detallesCompras/deletedetallecompra?idDetalle=${row.getValue("idDetalleCompra")}&idEmpresa=${idEmpresa}`
-                      );
-                      toast(res.data?.message,{style:{background:'red'}});
-                      mutate();
-                    }}
-                  >
-                    <Delete/>
-                  </Button>
-                </Tooltip>
+                  </>
+                )}
               </div>
             )}
             positionActionsColumn="first"
@@ -625,6 +611,4 @@ const DetallesCompras = ({ params }) => {
       </div>
     </>
   );
-};
-
-export default DetallesCompras;
+}

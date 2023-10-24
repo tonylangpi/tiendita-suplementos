@@ -19,14 +19,14 @@ import {
 } from "flowbite-react";
 import Delete from "@mui/icons-material/Delete";
 
-const DetallesCompras = ({ params }) => {
+const DetallesVentas = ({ params }) => {
   const router = useRouter();
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
   const { data: session } = useSession();
   let idEmpresa = session?.user?.idEmpresa; //obtenemos la empresa del que esta logueado en la app
   const { data, mutate } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}detallesCompras/all?idEmpresa=${idEmpresa}&idEncabezado=${params.idCompra}`,
+    `${process.env.NEXT_PUBLIC_API_URL}detallesVenta/all?idEmpresa=${idEmpresa}&idEncabezadoVenta=${params.idVenta}`,
     {
       revalidateIfStale: true,
       revalidateOnFocus: false,
@@ -43,11 +43,11 @@ const DetallesCompras = ({ params }) => {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      idEncabezado: params.idCompra ? params.idCompra : 0,
+      idEncabezadoVenta: params.idVenta ? params.idVenta : "",
       idProducto: "",
-      Cantidad: 0,
-      precio_costo: 0,
-      ganancia: 0,
+      nombreProducto:"",
+      stock:0,
+      cantidad: 0,
       precio_venta: 0,
       idEmpresa:idEmpresa
     },
@@ -102,7 +102,7 @@ const DetallesCompras = ({ params }) => {
     //configuracion de las columnas que vienen en la consulta
     () => [
       {
-        accessorKey: "idDetalleCompra", //simple recommended way to define a column
+        accessorKey: "idDetalleVenta", //simple recommended way to define a column
         header: "ID",
         enableEditing: false, //disable editing on this column
         enableSorting: false,
@@ -110,24 +110,25 @@ const DetallesCompras = ({ params }) => {
         Cell: ({ renderedCellValue }) => <strong>{renderedCellValue}</strong>, //optional custom cell render
       },
       {
-        accessorKey: "Cantidad", //alternate way
-        header: "Cantidad",
-        Header: <i style={{ color: "blue" }}>Cantidad Comprada</i>, //optional custom markup
-      },
-      {
         accessorKey: "codigo", //alternate way
         header: "codigo",
         Header: <i style={{ color: "blue" }}>CodigoProducto</i>, //optional custom markup
       },
+      
       {
         accessorKey: "descripcion", //alternate way
         header: "descripcion",
         Header: <i style={{ color: "blue" }}>Producto</i>, //optional custom markup
       },
       {
-        accessorKey: "precio_costo", //alternate way
-        header: "precio_costo",
-        Header: <i style={{ color: "blue" }}>precio Costo</i>, //optional custom markup
+        accessorKey: "cantidad", //alternate way
+        header: "cantidad",
+        Header: <i style={{ color: "blue" }}>Cantidad vendida</i>, //optional custom markup
+      },
+      {
+        accessorKey: "precio_venta", //alternate way
+        header: "precio_venta",
+        Header: <i style={{ color: "blue" }}>precio Venta</i>, //optional custom markup
       },
       {
         accessorKey: "Subtotal", //alternate way
@@ -139,13 +140,24 @@ const DetallesCompras = ({ params }) => {
   );
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}detallesCompras/createDetalle`,
-        data
-      );
-      toast(res.data?.message);
-      reset();
-      mutate();
+      if(data?.stock == 0){
+        toast('YA NO HAY STOCK DE ESTE PRODUCTO',{style:{background:'red'}});
+      }else{
+        const values = {
+          idEncabezadoVenta: data?.idEncabezadoVenta,
+          idProducto: data?.idProducto,
+          stock:data?.stock - parseInt(data?.cantidad),
+          cantidad: data?.cantidad,
+          idEmpresa:data?.idEmpresa
+          } 
+          const res = await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}detallesVenta/createDetalle`,
+            values
+          );
+          toast(res.data?.message);
+          reset();
+          mutate();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -177,9 +189,13 @@ const DetallesCompras = ({ params }) => {
                   pill
                   onClick={() => {
                     setValue("idProducto", row.getValue("codigo"));
-                    setValue("precio_costo", row.getValue("precio_costo"))
-                    setValue("precio_venta", row.getValue("precio_venta"))
-                    setValue("ganancia", row.getValue("ganancia"))
+                    setValue("precio_venta", row.getValue("precio_venta"));
+                    setValue("nombreProducto", row.getValue("descripcion"));
+                    if(row.getValue("stock") == 0){
+                      setValue("stock", 0);
+                    }else{
+                      setValue("stock", row.getValue("stock"));
+                    }
                     props.setOpenModal(undefined);
                   }}
                 >
@@ -292,7 +308,7 @@ const DetallesCompras = ({ params }) => {
       <div className="flex flex-col pt-5">
         <Card className="max-w-sm mb-4 md:max-w-2xl">
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            DETALLES DE LA COMPRA
+            DETALLES DE LA VENTA
           </h5>
           <form className="grid grid-cols-2 gap-4" onSubmit={onSubmit}>
             <div>
@@ -300,19 +316,19 @@ const DetallesCompras = ({ params }) => {
                 <Label htmlFor="EncabezadoID" value="Encabezado ID" />
               </div>
               <TextInput
-                id="idEncabezado"
-                name="idEncabezado"
+                id="idEncabezadoVenta"
+                name="idEncabezadoVenta"
                 disabled
-                {...register("idEncabezado", {
+                {...register("idEncabezadoVenta", {
                   required: {
                     value: true,
                     message: "El id del encabezado es requerido",
                   },
                 })}
               />
-              {errors.idEncabezado && (
+              {errors.idEncabezadoVenta && (
                 <span className="text-red-600">
-                  {errors.idEncabezado.message}
+                  {errors.idEncabezadoVenta.message}
                 </span>
               )}
             </div>
@@ -320,7 +336,7 @@ const DetallesCompras = ({ params }) => {
               <div className="mb-2">
                 <Label
                   htmlFor="idProducto"
-                  value="Selecciona el producto comprado"
+                  value="Selecciona el producto a vender"
                 />
                 <Button onClick={() => props.setOpenModal("default")}>
                   SELECCIONAR
@@ -355,16 +371,60 @@ const DetallesCompras = ({ params }) => {
             </div>
             <div>
               <div className="mb-2">
-                <Label htmlFor="Cantidad" value="Cantidad comprada" />
+                <Label htmlFor="nombreProducto" value="Nombre Producto" />
                 <TextInput
-                  id="Cantidad"
-                  name="Cantidad"
-                  type="number"
-                  min={0}
-                  {...register("Cantidad", {
+                  id="nombreProducto"
+                  name="nombreProducto"
+                  disabled
+                  type="text"
+                  {...register("nombreProducto", {
                     required: {
                       value: true,
-                      message: "precio costo requerido",
+                      message: "Producto requerido",
+                    }
+                  })}
+                />
+                {errors.nombreProducto && (
+                  <span className="text-red-600">
+                    {errors.nombreProducto.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="mb-2">
+                <Label htmlFor="stock" value="stock Actual Producto" />
+                <TextInput
+                  id="stock"
+                  name="stock"
+                  disabled
+                  type="text"
+                  {...register("stock", {
+                    required: {
+                      value: true,
+                      message: "stock traido del producto requerido",
+                    }
+                  })}
+                />
+                {errors.stock && (
+                  <span className="text-red-600">
+                    {errors.stock.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="mb-2">
+                <Label htmlFor="cantidad" value="cantidad despachada" />
+                <TextInput
+                  id="cantidad"
+                  name="cantidad"
+                  type="number"
+                  min={0}
+                  {...register("cantidad", {
+                    required: {
+                      value: true,
+                      message: "cantidad requerida",
                     },
                     pattern: {
                       value: /^[0-9]*$/,
@@ -372,83 +432,16 @@ const DetallesCompras = ({ params }) => {
                     },
                   })}
                 />
-                {errors.Cantidad && (
+                {errors.cantidad && (
                   <span className="text-red-600">
-                    {errors.Cantidad.message}
+                    {errors.cantidad.message}
                   </span>
                 )}
               </div>
             </div>
             <div>
               <div className="mb-2">
-                <Label htmlFor="precio_costo" value="Precio Costo" />
-                <TextInput
-                  id="precio_costo"
-                  name="precio_costo"
-                  type="text"
-                  {...register("precio_costo", {
-                    required: {
-                      value: true,
-                      message: "precio costo requerido",
-                    },
-                    pattern: {
-                      value: /^[0-9.]*$/,
-                      message: "solo numeros",
-                    },
-                  })}
-                />
-                {errors.precio_costo && (
-                  <span className="text-red-600">
-                    {errors.precio_costo.message}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div>
-              <div className="mb-2">
-                <Label
-                  htmlFor="ganancia"
-                  value="Ingresa porcentaje de ganancia"
-                />
-                <TextInput
-                  id="ganancia"
-                  name="ganancia"
-                  type="text"
-                  {...register("ganancia", {
-                    required: {
-                      value: true,
-                      message: "porcentaje de ganancia requerido",
-                    },
-                    pattern: {
-                      value: /^[0-9.]*$/,
-                      message: "solo numeros",
-                    },
-                  })}
-                />
-                {errors.ganancia && (
-                  <span className="text-red-600">
-                    {errors.ganancia.message}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div>
-              <Button color="light" pill
-               onClick={() =>{
-                   let ganancia = parseInt(getValues("ganancia"))/100 ;
-                   let precioCosto = parseFloat( getValues("precio_costo"));
-                   let precioAsumar = precioCosto * ganancia; 
-                   let precioVenta = precioCosto  + precioAsumar; 
-                   setValue("precio_venta", precioVenta); 
-               }
-               }
-              >
-                <p>Calcular PrecioVenta</p>
-              </Button>
-            </div>
-            <div>
-              <div className="mb-2">
-                <Label htmlFor="precio_venta" value="PRECIO VENTA CALCULADO" />
+                <Label htmlFor="precio_venta" value="Precio Venta" />
                 <TextInput
                   id="precio_venta"
                   name="precio_venta"
@@ -457,11 +450,11 @@ const DetallesCompras = ({ params }) => {
                   {...register("precio_venta", {
                     required: {
                       value: true,
-                      message: "Producto requerido",
+                      message: "precio venta requerido",
                     },
                     pattern: {
-                      value: /^[1-9.]*$/,
-                      message: "Codigo de producto no válido",
+                      value: /^[0-9.]*$/,
+                      message: "solo numeros",
                     },
                   })}
                 />
@@ -472,7 +465,9 @@ const DetallesCompras = ({ params }) => {
                 )}
               </div>
             </div>
-            <Button type="submit" disabled={!isValid}>Crear</Button>
+            <div>
+            </div>
+            <Button type="submit" disabled={!isValid}>Agregar</Button>
             <Button color="success"
               onClick={()=>{
                  router.back(); 
@@ -482,7 +477,7 @@ const DetallesCompras = ({ params }) => {
             </Button>
           </form>
         </Card>
-        <h3>Detalle Compras</h3>
+        <h3>Detalle Venta</h3>
         <Card className="max-w-sm mb-4 md:max-w-2xl">
           <MaterialReactTable
             columns={columnsDetalles}
@@ -491,7 +486,6 @@ const DetallesCompras = ({ params }) => {
             enableDensityToggle={false}
             initialState={{
               density: "compact",
-              columnVisibility: { Tipo_Compra: false, ProveedorId: false },
             }}
             muiTableProps={{
               sx: {
@@ -508,14 +502,14 @@ const DetallesCompras = ({ params }) => {
                       if (
                         !confirm(
                           `Deseas eliminar el detalle con id : ${row.getValue(
-                            "idDetalleCompra"
+                            "idDetalleVenta"
                           )}`
                         )
                       ) {
                         return;
                       }
                       const res = await axios.post(
-                        `${process.env.NEXT_PUBLIC_API_URL}detallesCompras/deletedetallecompra?idDetalle=${row.getValue("idDetalleCompra")}&idEmpresa=${idEmpresa}`
+                        `${process.env.NEXT_PUBLIC_API_URL}detallesVenta/deletedetalleventa?idDetalleVenta=${row.getValue("idDetalleVenta")}&idEmpresa=${idEmpresa}`
                       );
                       toast(res.data?.message,{style:{background:'red'}});
                       mutate();
@@ -627,4 +621,4 @@ const DetallesCompras = ({ params }) => {
   );
 };
 
-export default DetallesCompras;
+export default DetallesVentas;
