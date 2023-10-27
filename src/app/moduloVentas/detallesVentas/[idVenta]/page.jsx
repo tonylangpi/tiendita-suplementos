@@ -142,6 +142,8 @@ const DetallesVentas = ({ params }) => {
     try {
       if(data?.stock == 0){
         toast('YA NO HAY STOCK DE ESTE PRODUCTO',{style:{background:'red'}});
+      }else if(data?.cantidad > data?.stock){
+         toast('ESTAS VENDIENDO MAS DE LO QUE TIENE TU STOCK'); 
       }else{
         const values = {
           idEncabezadoVenta: data?.idEncabezadoVenta,
