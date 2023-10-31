@@ -576,9 +576,7 @@ function ProductosPage() {
                         let res = await axios.delete(
                           `${
                             process.env.NEXT_PUBLIC_API_URL
-                          }productos/changeStatusProd/${row.getValue(
-                            "codigo"
-                          )}`
+                          }productos/changeStatusProd/${row.getValue("codigo")}`
                         );
                         toast(`${res.data?.message}`, {
                           style: { background: "red" },
@@ -593,9 +591,20 @@ function ProductosPage() {
               )}
               positionActionsColumn="last"
               renderTopToolbarCustomActions={() => (
-                <Button onClick={() => props.setOpenModal("default")}>
-                  Agregar
-                </Button>
+                <>
+                  <Button onClick={() => props.setOpenModal("default")}>
+                    Agregar
+                  </Button>
+                  <Button gradientMonochrome="lime" onClick={() => {
+                     window.open(
+                            `${
+                              process.env.NEXT_PUBLIC_API_URL
+                            }productos/reporteProductos/${idEmpresa}`
+                          );
+                  }}>
+                    REPORTE
+                  </Button>
+                </>
               )}
               localization={{
                 actions: "Acciones",
