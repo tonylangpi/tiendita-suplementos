@@ -51,6 +51,7 @@ function Roles() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+       if(nivelAcceso == "SOPORTE"){
         const res = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}roles/createRol`,
           data
@@ -59,6 +60,11 @@ function Roles() {
         reset();
         mutate();
       props.setOpenModal(undefined);
+       }else{
+         toast("TU NIVEL DE ACCESO NO PERMITE CREAR UN ROL SOLO SOPORTE PUEDE"); 
+         props.setOpenModal(undefined);
+       }
+       
     } catch (error) {
       console.log(error);
     }

@@ -43,7 +43,7 @@ const CardDetalleRol = ({rolDetalle, niveles}) => {
             reset();
             router.back(); 
           }else{
-             toast("TU NIVEL DE ACCESO NO PERMITE ACTUALIZAR LOS ROLES")
+             toast("TU NIVEL DE ACCESO NO PERMITE ACTUALIZAR LOS ROLES SOLO SOPORTE");
           }
          
         } catch (error) {
