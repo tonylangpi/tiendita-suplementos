@@ -8,6 +8,7 @@ import axios, { AxiosError } from "axios";
 import { Button, Modal, Label, TextInput} from "flowbite-react";
 import {useState, useEffect, useMemo}  from "react"
 import useSWR from "swr";
+import Spin from '../../../components/Spinner';
  function MarcasPage(){
   const [openModal, setOpenModal] = useState();
   const { data, mutate} = useSWR(
@@ -244,7 +245,7 @@ import useSWR from "swr";
           unpinAll: "Desanclar todo",
           unsorted: "Sin ordenar",
         }}
-      />) : (<h1>Espera...</h1>)
+      />) : (<Spin/>)
       }
     </>
   );

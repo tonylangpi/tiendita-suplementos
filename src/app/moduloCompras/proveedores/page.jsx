@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
+import Spin from '../../../components/Spinner'; 
 function ProveedoresPage(){
   const [openModal, setOpenModal] = useState();
   const router = useRouter();
@@ -384,7 +385,7 @@ function ProveedoresPage(){
           unpinAll: "Desanclar todo",
           unsorted: "Sin ordenar",
         }}
-      />) : (<h1>Recargando</h1>)
+      />) : (<Spin/>)
       }
     </>
   );

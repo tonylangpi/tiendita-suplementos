@@ -221,7 +221,7 @@ export default function Clientes() {
             <Button type="submit">Crear</Button>
           </form>
         </Card>
-        <h3>Listado de clientess</h3>
+        <h3>Listado de clientes</h3>
         <Card className="max-w-sm mb-4 md:max-w-2xl">
           <MaterialReactTable
             columns={columnsClientes}

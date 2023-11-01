@@ -10,6 +10,7 @@ import { Button, Modal, Label, TextInput} from "flowbite-react";
 import { useRouter } from "next/navigation";
 import {useState,useMemo}  from "react"
 import useSWR from "swr";
+import Spin from '../../../components/Spinner'; 
 function SaboresPage(){
   const [openModal, setOpenModal] = useState();
   const router = useRouter();
@@ -249,7 +250,7 @@ function SaboresPage(){
           unsorted: "Sin ordenar",
         }}
       />
-        ) : (<h1>Espera...</h1>)
+        ) : (<Spin/>)
       }
     </>
   );

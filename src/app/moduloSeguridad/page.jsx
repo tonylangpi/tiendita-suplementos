@@ -19,7 +19,7 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
-
+import Spin from '../../components/Spinner'; 
 function Usuarios() {
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
@@ -433,7 +433,7 @@ function Usuarios() {
           </Card>
         </>
       ) : (
-        <h1>Cargando....</h1>
+        <Spin/>
       )}
     </div>
   );

@@ -19,7 +19,7 @@ import PowerSettingsNewTwoToneIcon from "@mui/icons-material/PowerSettingsNewTwo
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
-
+import Spin from '../../../components/Spinner'; 
 function Roles() {
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
@@ -339,7 +339,7 @@ function Roles() {
           </Card>
         </>
       ) : (
-        <h1>Cargando....</h1>
+        <Spin/>
       )}
     </div>
   );

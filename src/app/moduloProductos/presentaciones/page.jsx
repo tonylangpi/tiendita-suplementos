@@ -8,6 +8,7 @@ import axios, { AxiosError } from "axios";
 import { Button, Modal, Label, TextInput, Textarea } from "flowbite-react";
 import {useState,useMemo}  from "react"
 import useSWR from "swr";
+import Spin from '../../../components/Spinner';
 function PresentacionesPage() {
   const [openModal, setOpenModal] = useState();
   const { data, mutate} = useSWR(
@@ -247,7 +248,7 @@ function PresentacionesPage() {
         }}
       />
 
-        ) : (<h1>Espera...</h1>)
+        ) : (<Spin/>)
       }
     </>
   );
