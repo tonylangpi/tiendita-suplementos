@@ -9,7 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import axios, { AxiosError } from "axios";
 import { Button, Modal, Label, TextInput} from "flowbite-react";
 import useSWR from "swr";
-
+import Spin from '../../../components/Spinner'; 
  function TipoCompra() {
   const [openModal, setOpenModal] = useState();
   const { data, mutate} = useSWR(
@@ -251,7 +251,7 @@ import useSWR from "swr";
           unsorted: "Sin ordenar",
         }}
       />
-          ) : (<h1>Renderizando...</h1>)
+          ) : (<Spin/>)
         }
     </>
   );

@@ -19,7 +19,7 @@ import PowerSettingsNewTwoToneIcon from "@mui/icons-material/PowerSettingsNewTwo
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
-
+import Spinner from '../../components/Spinner'; 
 function ProductosPage() {
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
@@ -703,7 +703,7 @@ function ProductosPage() {
           </Card>
         </>
       ) : (
-        <h1>Espera....</h1>
+        <Spinner/>
       )}
     </div>
   );

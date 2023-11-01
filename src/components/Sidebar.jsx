@@ -61,6 +61,9 @@ const Slidebar = () => {
                     <Sidebar.Item as={Link} href="/moduloVentas/clientes">
                       Clientes
                     </Sidebar.Item>
+                    <Sidebar.Item as={Link} href="/moduloVentas/reporteVentas">
+                      Reporte Ventas
+                    </Sidebar.Item>
                   </Sidebar.Collapse>
                   <Sidebar.Collapse icon={HiShoppingBag} label="Compras">
                     <Sidebar.Item as={Link} href="/moduloCompras">

@@ -9,7 +9,7 @@ import { Button, Modal, Label, TextInput, Textarea } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
-
+import Spin from '../../../components/Spinner'; 
 function EmpresasPage(){
   const [openModal, setOpenModal] = useState();
   const router = useRouter();
@@ -236,7 +236,7 @@ function EmpresasPage(){
           unpinAll: "Desanclar todo",
           unsorted: "Sin ordenar",
         }}
-      />) : (<h1>ESPERANDO....</h1>)
+      />) : (<Spin/>)
       }
     </>
   );

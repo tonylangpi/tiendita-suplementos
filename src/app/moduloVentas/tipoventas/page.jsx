@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
+import Spin from '../../../components/Spinner';
 function TipoVentas(){
   const [openModal, setOpenModal] = useState();
   const router = useRouter();
@@ -284,7 +285,7 @@ function TipoVentas(){
           unpinAll: "Desanclar todo",
           unsorted: "Sin ordenar",
         }}
-      />) : (<h1>Cargando...</h1>)
+      />) : (<Spin/>)
       }
     </>
   );
