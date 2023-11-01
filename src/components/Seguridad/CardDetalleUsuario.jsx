@@ -177,7 +177,7 @@ const CardDetalleUsuario = ({ usuarioDetalle }) => {
                     value: true,
                     message: "La clave es  requerida",
                   },
-                  maxLength: 8,
+                  maxLength: 25,
                   minLength: 8,
                 })}
               />
@@ -186,7 +186,7 @@ const CardDetalleUsuario = ({ usuarioDetalle }) => {
               )}
               {errors.clave?.type === "maxLength" && (
                 <span className="text-red-600">
-                  la clave no de sobrepasar los 8 digitos
+                  la clave no de sobrepasar los 25 digitos
                 </span>
               )}
               {errors.clave?.type === "minLength" && (
